@@ -68,17 +68,17 @@ class DocumentoController extends Controller
     function page(Request $request)
     {
 
-
+        Log::info('Entra: ',[]);
         $empresa_id= $request->query('empresaId');
-        $user_id= $request->query('userId');
+        /*$user_id= $request->query('userId');
         if ($user_id){
             $user = new User();
             $user->id=$user_id;
             $request->session()->put('user', $user);
         }
-        else{
+        else{*/
             $user = $request->session()->get('user');
-        }
+        //}
 
 
         $documentos=DB::select(DB::raw("exec GEN_TraerEmpresaDocumentosPorIdEmpresa :Param1"),[

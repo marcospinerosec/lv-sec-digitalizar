@@ -1,0 +1,50 @@
+body {
+    font-family: "Arial", "Helvetica", "sans-serif";
+    color: #333;
+}
+
+h2 {
+    color: #999;
+}
+
+p.url {
+    font-size: 12px;
+    font-style: italic;
+}
+
+#main {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+#left  {
+    width: 360px;
+    float: left;
+}
+
+#left h2:first-child {
+    margin-top: 0;
+}
+
+#left img {
+    border: dashed 1px #19f;
+    padding: 4px;
+    margin: 4px;
+}
+
+#left img:hover {
+    border: solid 2px #19f;
+    margin: 3px;
+}
+
+#right  {
+    margin-left: 360px; /* Change this to whatever the width of your left column is*/
+}
+
+#right h2:first-child {
+    margin-top: 0;
+}
+
+.clear {
+    clear: both;
+}

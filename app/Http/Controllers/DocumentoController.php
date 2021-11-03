@@ -65,11 +65,14 @@ class DocumentoController extends Controller
 
     }
 
+
+
     function page(Request $request)
     {
 
-        Log::info('Entra: ',[]);
+
         $empresa_id= $request->query('empresaId');
+
         /*$user_id= $request->query('userId');
         if ($user_id){
             $user = new User();

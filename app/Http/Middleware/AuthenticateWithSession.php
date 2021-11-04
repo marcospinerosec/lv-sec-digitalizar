@@ -66,6 +66,6 @@ class AuthenticateWithSession
             return $next($request);
         }
 
-        //return redirect('/login');
+        return redirect('no_session');
     }
 }

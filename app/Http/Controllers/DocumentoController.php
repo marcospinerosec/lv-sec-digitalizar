@@ -25,6 +25,11 @@ class DocumentoController extends Controller
         //$this->middleware('auth');
     }
 
+    public function noSession()
+    {
+        return view('admin.documentos.no_session');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -177,6 +182,19 @@ class DocumentoController extends Controller
             'nombre' => 'required|max:255'
 
         ]);*/
+
+        // Validation
+        $request->validate([
+            'DJSEC' => 'mimes:pdf|max:4096',
+            'CUIT' => 'mimes:pdf|max:4096',
+            'RTAFIP' => 'mimes:pdf|max:4096',
+            'HABMUN' => 'mimes:pdf|max:4096',
+            'JORLAB' => 'mimes:pdf|max:4096',
+            'DNI' => 'mimes:pdf|max:4096',
+            'CONTRATO' => 'mimes:pdf|max:4096',
+            'F931' => 'mimes:pdf|max:4096'
+        ]);
+
         $empresa = request('nombrereal');
         $id = request('id');
         $idEmpresa = request('idEmpresa');

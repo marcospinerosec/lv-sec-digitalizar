@@ -33,6 +33,7 @@ Route::group(['middleware' => ['web', 'AuthenticateWithSession']], function () {
 
 
 
+
     Route::get('/upload', [DocumentoController::class, 'upload'])->name('upload');
 
     Route::post('/uploadFile', [DocumentoController::class, 'uploadFile'])->name('uploadFile');
@@ -40,4 +41,4 @@ Route::group(['middleware' => ['web', 'AuthenticateWithSession']], function () {
 
 });
 
-
+Route::get('no_session', 'App\Http\Controllers\DocumentoController@noSession')->name('documentos.no_session');

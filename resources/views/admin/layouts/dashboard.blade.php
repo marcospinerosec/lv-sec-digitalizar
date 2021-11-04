@@ -268,6 +268,8 @@
             document.getElementById('hrefF931').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_F931.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('F931Escaneado').value = scanner.getSaveResponse(response);
         }
+        document.getElementById("formDoc").submit();
+
     }
     function quitar(nameFile) {
         var bool=confirm("eliminar archivo?");
@@ -307,6 +309,7 @@
                     break;
 
             }
+            document.getElementById("formDoc").submit();
         }
 
 

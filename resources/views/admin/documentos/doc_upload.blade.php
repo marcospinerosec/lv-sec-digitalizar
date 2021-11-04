@@ -36,7 +36,7 @@
 
         <div class="form-group">
             <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
-            {{ $documento[0]->CODIGO }} - {{ $documento[0]->NOMBREREAL }}
+            {{ $documento[0]->CODIGO }} - <?php echo utf8_encode($documento[0]->NOMBREREAL) ?>
             <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',$documento[0]->NOMBREREAL))?>">
             <input type="hidden" name="id"  value="{{$documento[0]->ID}}">
             <input type="hidden" name="idEmpresa"  value="{{$documento[0]->IDEMPRESA}}">

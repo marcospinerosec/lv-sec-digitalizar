@@ -58,15 +58,15 @@
                         <tr>
                             <td>{{ $empresa->IDEMPRESA }}</td>
                             <td>{{ $empresa->CODIGO }}</td>
-                            <td>{{ $empresa->NOMBREREAL }}</td>
-                            <td>{{ $empresa->NOMBREFANTASIA }}</td>
+                            <td><?php echo utf8_encode($empresa->NOMBREREAL) ?></td>
+                            <td><?php echo utf8_encode($empresa->NOMBREFANTASIA) ?></td>
                             <td><?php
                                 $address='';
 
-                                $address .=(!is_null($empresa->CALLEREAL))?$empresa->CALLEREAL:'';
-                                $address .=(!is_null($empresa->NUMEROREAL))?' '.$empresa->NUMEROREAL:'';
-                                $address .=(!is_null($empresa->EXTENSIONREAL))?' '.$empresa->EXTENSIONREAL:'';
-                                $address .=(!is_null($empresa->LOCALIDADREAL))?' - '.$empresa->LOCALIDADREAL:'';
+                                $address .=(!is_null(utf8_encode($empresa->CALLEREAL)))?utf8_encode($empresa->CALLEREAL):'';
+                                $address .=(!is_null(utf8_encode($empresa->NUMEROREAL)))?' '.utf8_encode($empresa->NUMEROREAL):'';
+                                $address .=(!is_null(utf8_encode($empresa->EXTENSIONREAL)))?' '.utf8_encode($empresa->EXTENSIONREAL):'';
+                                $address .=(!is_null(utf8_encode($empresa->LOCALIDADREAL)))?' - '.utf8_encode($empresa->LOCALIDADREAL):'';
 
                                 echo $address;
 

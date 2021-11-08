@@ -54,11 +54,13 @@ class AuthenticateWithSession
             $userIDDecrypt = $this->cryptoJsAesDecrypt("myPass",$userID);
 
             Log::debug('user decrypt: '.$userIDDecrypt);
+            if ($userIDDecrypt){
+                $request->session()->put('authenticated', time());
+                $user = new User();
+                $user->id=$userIDDecrypt;
+                $request->session()->put('user', $user);
+            }
 
-            $request->session()->put('authenticated', time());
-            $user = new User();
-            $user->id=$userIDDecrypt;
-            $request->session()->put('user', $user);
         }
         if (!empty(session('authenticated'))) {
             //Log::debug('logueado');

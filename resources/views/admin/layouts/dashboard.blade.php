@@ -239,34 +239,42 @@
         if(scanner.getSaveResponse(response).indexOf("DJSEC")!=-1){
             document.getElementById('hrefDJSEC').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_DJSEC.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('DJSECEscaneado').value = scanner.getSaveResponse(response);
+            document.getElementById('idDocumento').value = 1;
         }
         if(scanner.getSaveResponse(response).indexOf("CUIT")!=-1){
             document.getElementById('hrefCUIT').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_CUIT.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('CUITEscaneado').value = scanner.getSaveResponse(response);
+            document.getElementById('idDocumento').value = 2;
         }
         if(scanner.getSaveResponse(response).indexOf("RTAFIP")!=-1){
             document.getElementById('hrefRTAFIP').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_RTAFIP.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('RTAFIPEscaneado').value = scanner.getSaveResponse(response);
+            document.getElementById('idDocumento').value = 3;
         }
         if(scanner.getSaveResponse(response).indexOf("HABMUN")!=-1){
             document.getElementById('hrefHABMUN').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_HABMUN.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('HABMUNEscaneado').value = scanner.getSaveResponse(response);
+            document.getElementById('idDocumento').value = 4;
         }
         if(scanner.getSaveResponse(response).indexOf("JORLAB")!=-1){
             document.getElementById('hrefJORLAB').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_JORLAB.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('JORLABEscaneado').value = scanner.getSaveResponse(response);
+            document.getElementById('idDocumento').value = 5;
         }
         if(scanner.getSaveResponse(response).indexOf("DNI")!=-1){
             document.getElementById('hrefDNI').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_DNI.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('DNIEscaneado').value = scanner.getSaveResponse(response);
+            document.getElementById('idDocumento').value = 6;
         }
         if(scanner.getSaveResponse(response).indexOf("CONTRATO")!=-1){
             document.getElementById('hrefCONTRATO').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_CONTRATO.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('CONTRATOEscaneado').value = scanner.getSaveResponse(response);
+            document.getElementById('idDocumento').value = 7;
         }
         if(scanner.getSaveResponse(response).indexOf("F931")!=-1){
             document.getElementById('hrefF931').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_F931.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('F931Escaneado').value = scanner.getSaveResponse(response);
+            document.getElementById('idDocumento').value = 8;
         }
         document.getElementById("formDoc").submit();
 
@@ -278,34 +286,42 @@
                 case "DJSEC":
                     document.getElementById('DJSECEscaneado').value ='';
                     document.getElementById('hrefDJSEC').innerHTML ='';
+                    document.getElementById('idDocumento').value = 1;
                     break;
                 case "CUIT":
                     document.getElementById('CUITEscaneado').value ='';
                     document.getElementById('hrefCUIT').innerHTML ='';
+                    document.getElementById('idDocumento').value = 2;
                     break;
                 case "RTAFIP":
                     document.getElementById('RTAFIPEscaneado').value ='';
                     document.getElementById('hrefRTAFIP').innerHTML ='';
+                    document.getElementById('idDocumento').value = 3;
                     break;
                 case "HABMUN":
                     document.getElementById('HABMUNEscaneado').value ='';
                     document.getElementById('hrefHABMUN').innerHTML ='';
+                    document.getElementById('idDocumento').value = 4;
                     break;
                 case "JORLAB":
                     document.getElementById('JORLABEscaneado').value ='';
                     document.getElementById('hrefJORLAB').innerHTML ='';
+                    document.getElementById('idDocumento').value = 5;
                     break;
                 case "DNI":
                     document.getElementById('DNIEscaneado').value ='';
                     document.getElementById('hrefDNI').innerHTML ='';
+                    document.getElementById('idDocumento').value = 6;
                     break;
                 case "CONTRATO":
                     document.getElementById('CONTRATOEscaneado').value ='';
                     document.getElementById('hrefCONTRATO').innerHTML ='';
+                    document.getElementById('idDocumento').value = 7;
                     break;
                 case "F931":
                     document.getElementById('F931Escaneado').value ='';
                     document.getElementById('hrefF931').innerHTML ='';
+                    document.getElementById('idDocumento').value = 8;
                     break;
 
             }

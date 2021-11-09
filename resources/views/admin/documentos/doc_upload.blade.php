@@ -38,7 +38,7 @@
             <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
             {{ $empresa[0]->CODIGO }} - <?php echo utf8_encode($empresa[0]->NOMBREREAL) ?>
             <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',$empresa[0]->NOMBREREAL))?>">
-
+            <input type="hidden" name="idDocumento"  id="idDocumento" value="">
             <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
         </div>
         <hr>
@@ -90,27 +90,35 @@
 
         $(function() {
             document.getElementById("fileDJSEC").onchange = function() {
+                document.getElementById('idDocumento').value = 1;
                 document.getElementById("formDoc").submit();
             };
             document.getElementById("fileCUIT").onchange = function() {
+                document.getElementById('idDocumento').value = 2;
                 document.getElementById("formDoc").submit();
             };
             document.getElementById("fileRTAFIP").onchange = function() {
+                document.getElementById('idDocumento').value = 3;
                 document.getElementById("formDoc").submit();
             };
             document.getElementById("fileHABMUN").onchange = function() {
+                document.getElementById('idDocumento').value = 4;
                 document.getElementById("formDoc").submit();
             };
             document.getElementById("fileJORLAB").onchange = function() {
+                document.getElementById('idDocumento').value = 5;
                 document.getElementById("formDoc").submit();
             };
             document.getElementById("fileDNI").onchange = function() {
+                document.getElementById('idDocumento').value = 6;
                 document.getElementById("formDoc").submit();
             };
             document.getElementById("fileCONTRATO").onchange = function() {
+                document.getElementById('idDocumento').value = 7;
                 document.getElementById("formDoc").submit();
             };
             document.getElementById("fileF931").onchange = function() {
+                document.getElementById('idDocumento').value = 8;
                 document.getElementById("formDoc").submit();
             };
             function readURL(input) {

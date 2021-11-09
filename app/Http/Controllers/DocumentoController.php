@@ -46,25 +46,7 @@ class DocumentoController extends Controller
         ]);
 
         //Log::info('Hay datos: ' . count($documentos),[]);
-        if (count($documentos)==0){
 
-
-            try{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $empresa_id,
-                    ':Param2' => null,
-                    ':Param3' => null,
-                    ':Param4' => null,
-                    ':Param5' => null,
-
-                ]);
-            }
-            catch(QueryException $ex){
-                $error = $ex->getMessage();
-                $ok=0;
-
-            }
-        }
 
         return view('admin.documentos.index', ['documentos' => $documentos]);
 
@@ -78,42 +60,6 @@ class DocumentoController extends Controller
 
         $empresa_id= $request->query('empresaId');
 
-        /*$user_id= $request->query('userId');
-        if ($user_id){
-            $user = new User();
-            $user->id=$user_id;
-            $request->session()->put('user', $user);
-        }
-        else{*/
-            $user = $request->session()->get('user');
-        //}
-
-
-        /*$documentos=DB::select(DB::raw("exec GEN_TraerEmpresaDocumentosPorIdEmpresa :Param1"),[
-            ':Param1' => $empresa_id,
-
-        ]);
-
-        //Log::info('Hay datos: ' . count($documentos),[]);
-        if (count($documentos)==0){
-
-
-            try{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $empresa_id,
-                    ':Param2' => null,
-                    ':Param3' => null,
-                    ':Param4' => null,
-                    ':Param5' => null,
-
-                ]);
-            }
-            catch(QueryException $ex){
-                $error = $ex->getMessage();
-                $ok=0;
-
-            }
-        }*/
 
         $empresa=DB::select(DB::raw("exec GEN_TraerEmpresaPorId :Param1"),[
             ':Param1' => $empresa_id,
@@ -390,268 +336,121 @@ class DocumentoController extends Controller
             $pos      = strripos(request('F931Escaneado'), '/');
             $newFileNameF931 = str_replace('"]', '', substr(request('F931Escaneado'), $pos));
         }
+        if (!$newFileNameDJSEC){
+            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DJSEC.pdf' ;
+
+            if(file_exists($oldImage)){
+                //delete the image
+                unlink($oldImage);
+            }
+
+
+        }
+        if (!$newFileNameCUIT){
+            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CUIT.pdf';
+
+            if(file_exists($oldImage)){
+                //delete the image
+                unlink($oldImage);
+            }
+
+        }
+        if (!$newFileNameRTAFIP){
+            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_RTAFIP.pdf';
+
+            if(file_exists($oldImage)){
+                //delete the image
+                unlink($oldImage);
+            }
+
+        }
+        if (!$newFileNameHABMUN){
+            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_HABMUN.pdf' ;
+
+            if(file_exists($oldImage)){
+                //delete the image
+                unlink($oldImage);
+            }
+
+
+        }
+        if (!$newFileNameJORLAB){
+            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_JORLAB.pdf' ;
+
+            if(file_exists($oldImage)){
+                //delete the image
+                unlink($oldImage);
+            }
+
+
+        }
+        if (!$newFileNameDNI){
+            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DNI.pdf' ;
+
+            if(file_exists($oldImage)){
+                //delete the image
+                unlink($oldImage);
+            }
+
+
+        }
+        if (!$newFileNameCONTRATO){
+            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CONTRATO.pdf' ;
+
+            if(file_exists($oldImage)){
+                //delete the image
+                unlink($oldImage);
+            }
+
+
+        }
+        if (!$newFileNameF931){
+            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_F931.pdf' ;
+
+            if(file_exists($oldImage)){
+                //delete the image
+                unlink($oldImage);
+            }
+
+
+        }
+        $user = $request->session()->get('user');
+
+        $idDJSEC = (request('DJSECID'))?request('DJSECID'):null;
+        $idCUIT = (request('CUITID'))?request('CUITID'):null;
+        $idRTAFIP = (request('RTAFIPID'))?request('RTAFIPID'):null;
+        $idHABMUN = (request('HABMUNID'))?request('HABMUNID'):null;
+        $idJORLAB = (request('JORLABID'))?request('JORLABID'):null;
+        $idDNI = (request('DNIID'))?request('DNIID'):null;
+        $idCONTRATO = (request('CONTRATOID'))?request('CONTRATOID'):null;
+        $idF931 = (request('F931ID'))?request('F931ID'):null;
+        $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
         try{
-            $user = $request->session()->get('user');
-            if (!$newFileNameDJSEC){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DJSEC.pdf' ;
 
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-
-            if (request('DJSECID')){
-
-                $updateDocumento=DB::select(DB::raw("exec GEN_ModificarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
+                $insertarDocumento=DB::select(DB::raw("exec GEN_ACTUALIZARDocumentos :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10, :Param11, :Param12, :Param13, :Param14, :Param15, :Param16, :Param17, :Param18, :Param19"),[
                     ':Param1' => $idEmpresa,
-                    ':Param2' => 1,
+                    ':Param2' => $idDJSEC,
                     ':Param3' => $newFileNameDJSEC,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
+                    ':Param4' => $idCUIT,
+                    ':Param5' => $newFileNameCUIT,
+                    ':Param6' => $idRTAFIP,
+                    ':Param7' => $newFileNameRTAFIP,
+                    ':Param8' => $idHABMUN,
+                    ':Param9' => $newFileNameHABMUN,
+                    ':Param10' => $idJORLAB,
+                    ':Param11' => $newFileNameJORLAB,
+                    ':Param12' => $idDNI,
+                    ':Param13' => $newFileNameDNI,
+                    ':Param14' => $idCONTRATO,
+                    ':Param15' => $newFileNameCONTRATO,
+                    ':Param16' => $idF931,
+                    ':Param17' => $newFileNameF931,
+                    ':Param18' => $user->id,
+                    ':Param19' => $idDocumento,
 
                 ]);
-            }
-            else{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 1,
-                    ':Param3' => $newFileNameDJSEC,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
 
 
-            if (!$newFileNameCUIT){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CUIT.pdf';
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-            }
-
-            if (request('CUITID')){
-
-                $updateDocumento=DB::select(DB::raw("exec GEN_ModificarEmpresaDocumento :Param1, :Param2, :Param3, :Param4"),[
-                    ':Param1' => request('CUITID'),
-                    ':Param2' => $newFileNameCUIT,
-                    ':Param3' => null,
-                    ':Param4' => $user->id,
-
-                ]);
-            }
-            else{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 2,
-                    ':Param3' => $newFileNameCUIT,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-
-            if (!$newFileNameRTAFIP){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_RTAFIP.pdf';
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-            }
-            if (request('RTAFIPID')){
-
-                $updateDocumento=DB::select(DB::raw("exec GEN_ModificarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 3,
-                    ':Param3' => $newFileNameRTAFIP,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-            else{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 3,
-                    ':Param3' => $newFileNameRTAFIP,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-
-            if (!$newFileNameHABMUN){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_HABMUN.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-
-            if (request('HABMUNID')){
-
-                $updateDocumento=DB::select(DB::raw("exec GEN_ModificarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 4,
-                    ':Param3' => $newFileNameHABMUN,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-            else{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 4,
-                    ':Param3' => $newFileNameHABMUN,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-
-            if (!$newFileNameJORLAB){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_JORLAB.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-
-            if (request('JORLABID')){
-
-                $updateDocumento=DB::select(DB::raw("exec GEN_ModificarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 5,
-                    ':Param3' => $newFileNameJORLAB,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-            else{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 5,
-                    ':Param3' => $newFileNameJORLAB,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-
-            if (!$newFileNameDNI){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DNI.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-
-            if (request('DNIID')){
-
-                $updateDocumento=DB::select(DB::raw("exec GEN_ModificarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 6,
-                    ':Param3' => $newFileNameDNI,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-            else{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 6,
-                    ':Param3' => $newFileNameDNI,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-
-            if (!$newFileNameCONTRATO){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CONTRATO.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-
-            if (request('CONTRATOID')){
-
-                $updateDocumento=DB::select(DB::raw("exec GEN_ModificarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 7,
-                    ':Param3' => $newFileNameCONTRATO,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-            else{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 7,
-                    ':Param3' => $newFileNameCONTRATO,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-
-            if (!$newFileNameF931){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_F931.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-
-            if (request('F931ID')){
-
-                $updateDocumento=DB::select(DB::raw("exec GEN_ModificarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 8,
-                    ':Param3' => $newFileNameF931,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
-            else{
-                $insertarDocumento=DB::select(DB::raw("exec GEN_InsertarEmpresaDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => 8,
-                    ':Param3' => $newFileNameF931,
-                    ':Param4' => null,
-                    ':Param5' => $user->id,
-
-                ]);
-            }
 
 
 
@@ -663,17 +462,6 @@ class DocumentoController extends Controller
 
         }
 
-
-        /*$user = auth()->user();
-        $municipio = new Municipio();
-
-        $municipio->codigo = request('codigo');
-        $municipio->nombre = request('nombre');
-        $municipio->descripcion = request('descripcion');
-        $municipio->image_url = $newFileName;
-        $municipio->userId = $user->id;
-
-        $municipio->save();*/
 
         $redirect = redirect()->route('documentos.doc_upload', ['empresaId' => $idEmpresa])->with('success', 'Documentos actualizados!');
 

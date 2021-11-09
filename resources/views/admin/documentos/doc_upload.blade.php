@@ -81,7 +81,73 @@
             <input class="btn btn-primary" type="submit" value="{{__('Submit')}}">
         </div>-->
     </form>
+    <div class="row py-lg-2">
 
+
+        <div class="col-md-6">
+            <a href="{{route('documentos.create',  array('empresaId' => $empresa[0]->IDEMPRESA))}}" class="btn btn-primary float-md-left" role="button" aria-pressed="true">{{__('Nuevo')}}</a>
+        </div>
+
+    </div>
+    <!-- DataTables Example -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fas fa-table"></i>
+            {{__('Otros Documentos')}}
+
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>{{__('Archivo')}}</th>
+                        <th>{{__('User')}}</th>
+                        <th>{{__('Alta')}}</th>
+                        <th>{{__('Detalle')}}</th>
+                        <th>{{__('Tools')}}</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Id</th>
+                        <th>{{__('Archivo')}}</th>
+                        <th>{{__('User')}}</th>
+                        <th>{{__('Alta')}}</th>
+                        <th>{{__('Detalle')}}</th>
+                        <th>{{__('Tools')}}</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    @foreach ($otrosDocumentos as $otroDocumento)
+                        <tr>
+                            <td>{{ $otroDocumento->ID }}</td>
+
+                            <td>
+                                @if($otroDocumento->NOMBRE)
+                                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
+                                @endif
+
+                            </td>
+
+                            <td>{{ $otroDocumento->UsuarioNT }}</td>
+                            <td>{{($otroDocumento->FECHAALTA)?date('d/m/Y H:i', strtotime($otroDocumento->FECHAALTA)):''}}</td>
+                            <td>{{ $otroDocumento->DETALLE }}</td>
+                            <td>
+
+                                <a href="{{route('documentos.doc_upload',  array('documentoId' => $otroDocumento->ID))}}"><i class="fas fa-file-image fa-2x"></i></a>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <!--<div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>-->
+    </div>
 @section('js_documento_page')
 
     <script>

@@ -68,12 +68,17 @@ class DocumentoController extends Controller
 
         $documentos=DB::select(DB::raw("exec GEN_TraerDocumentosObligatorios"));
 
+        $otrosDocumentos=DB::select(DB::raw("exec GEN_TraerEmpresaOtrosDocumentosPorIdEmpresa :Param1"),[
+            ':Param1' => $empresa_id,
+
+        ]);
+
         $documentosEmpresas=DB::select(DB::raw("exec GEN_TraerEmpresaDocumentosPorIdEmpresa :Param1"),[
             ':Param1' => $empresa_id,
 
         ]);
         //print_r($documento);
-        return view('admin.documentos.doc_upload', ['documentos' => $documentos,'documentosEmpresas' => $documentosEmpresas, 'empresa' => $empresa]);
+        return view('admin.documentos.doc_upload', ['documentos' => $documentos,'otrosDocumentos' => $otrosDocumentos,'documentosEmpresas' => $documentosEmpresas, 'empresa' => $empresa]);
     }
 
 
@@ -114,9 +119,17 @@ class DocumentoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
+
+        $empresa_id= $request->query('empresaId');
+        $empresa=DB::select(DB::raw("exec GEN_TraerEmpresaPorId :Param1"),[
+            ':Param1' => $empresa_id,
+
+        ]);
+
+        return view('admin.documentos.create', ['empresa' => $empresa]);
     }
 
     /**
@@ -143,7 +156,8 @@ class DocumentoController extends Controller
             'JORLAB' => 'mimes:pdf|max:4096',
             'DNI' => 'mimes:pdf|max:4096',
             'CONTRATO' => 'mimes:pdf|max:4096',
-            'F931' => 'mimes:pdf|max:4096'
+            'F931' => 'mimes:pdf|max:4096',
+            'documento' => 'mimes:pdf|max:4096'
         ]);
 
         $empresa = request('nombrereal');
@@ -336,6 +350,29 @@ class DocumentoController extends Controller
             $pos      = strripos(request('F931Escaneado'), '/');
             $newFileNameF931 = str_replace('"]', '', substr(request('F931Escaneado'), $pos));
         }
+        $newFileNameDocumento=null;
+        if (request('documento')){
+            //get the image from the form
+            $DocumentoF=$request->file('documento');
+            $fileNameWithTheExtension = $DocumentoF->getClientOriginalName();
+
+            //get the name of the file
+            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+
+            //get extension of the file
+            $extension = $DocumentoF->getClientOriginalExtension();
+
+            //create a new name for the file using the timestamp
+            $newFileNameDocumento = $empresa . '_'.date('Y_m_d_H_i_s').'.' . $extension;
+
+            //save the iamge onto a public directory into a separately folder
+            $path = $DocumentoF->storeAs('public/files', $newFileNameDocumento);
+
+            // dd($extension);
+        }elseif (request('docEscaneado')){
+            $pos      = strripos(request('docEscaneado'), '/');
+            $newFileNameDocumento = str_replace('"]', '', substr(request('docEscaneado'), $pos));
+        }
         if (!$newFileNameDJSEC){
             $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DJSEC.pdf' ;
 
@@ -425,9 +462,10 @@ class DocumentoController extends Controller
         $idCONTRATO = (request('CONTRATOID'))?request('CONTRATOID'):null;
         $idF931 = (request('F931ID'))?request('F931ID'):null;
         $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
+        $detalle = (request('Detalle'))?request('Detalle'):null;
         try{
 
-                $insertarDocumento=DB::select(DB::raw("exec GEN_ACTUALIZARDocumentos :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10, :Param11, :Param12, :Param13, :Param14, :Param15, :Param16, :Param17, :Param18, :Param19"),[
+                $insertarDocumento=DB::select(DB::raw("exec GEN_ACTUALIZARDocumentos :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10, :Param11, :Param12, :Param13, :Param14, :Param15, :Param16, :Param17, :Param18, :Param19, :Param20, :Param21"),[
                     ':Param1' => $idEmpresa,
                     ':Param2' => $idDJSEC,
                     ':Param3' => $newFileNameDJSEC,
@@ -447,6 +485,8 @@ class DocumentoController extends Controller
                     ':Param17' => $newFileNameF931,
                     ':Param18' => $user->id,
                     ':Param19' => $idDocumento,
+                    ':Param20' => $detalle,
+                    ':Param21' => $newFileNameDocumento,
 
                 ]);
 

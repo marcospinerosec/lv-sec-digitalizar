@@ -30,7 +30,7 @@ Route::group(['middleware' => ['web', 'AuthenticateWithSession']], function () {
     Route::get('documentos', 'App\Http\Controllers\DocumentoController@index')->name('documentos.index');
     Route::get('doc_upload', 'App\Http\Controllers\DocumentoController@page')->name('documentos.doc_upload');
     Route::patch('store', 'App\Http\Controllers\DocumentoController@store')->name('documentos.store');
-
+    Route::get('create', 'App\Http\Controllers\DocumentoController@create')->name('documentos.create');
 
 
 

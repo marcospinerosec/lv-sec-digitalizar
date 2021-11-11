@@ -21,7 +21,7 @@
         <div class="form-group">
             <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
             {{ $empresa[0]->CODIGO }} - <?php echo utf8_encode($empresa[0]->NOMBREREAL) ?>
-            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',$empresa[0]->NOMBREREAL))?>">
+            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>">
             <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
             <input type="hidden" name="procesarDetalle"  value="1">
         </div>

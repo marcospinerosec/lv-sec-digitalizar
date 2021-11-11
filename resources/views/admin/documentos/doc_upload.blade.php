@@ -37,7 +37,7 @@
         <div class="form-group">
             <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
             {{ $empresa[0]->CODIGO }} - <?php echo utf8_encode($empresa[0]->NOMBREREAL) ?>
-            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes($empresa[0]->NOMBREREAL)))?>">
+            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>">
             <input type="hidden" name="idDocumento"  id="idDocumento" value="">
             <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
         </div>
@@ -126,7 +126,7 @@
 
 
 
-                            <td>{{ $otroDocumento->UsuarioNT }}</td>
+                            <td><?php echo utf8_encode($otroDocumento->UsuarioNT); ?></td>
                             <td>{{($otroDocumento->FECHAALTA)?date('d/m/Y H:i', strtotime($otroDocumento->FECHAALTA)):''}}</td>
                             <td>{{ $otroDocumento->DETALLE }}</td>
                             <td>

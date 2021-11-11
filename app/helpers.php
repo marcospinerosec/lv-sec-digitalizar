@@ -1,7 +1,12 @@
 <?php
+
+use Illuminate\Support\Facades\Log;
+
 if (! function_exists('quitar_tildes')) {
     function quitar_tildes($cadena)
     {
+
+
         //Reemplazamos la A y a
         $cadena = str_replace(
             array('Á', 'À', 'Â', 'Ä', 'á', 'à', 'ä', 'â', 'ª'),
@@ -39,6 +44,8 @@ if (! function_exists('quitar_tildes')) {
             array('N', 'n', 'C', 'c'),
             $cadena
         );
+
+
 
         return $cadena;
     }

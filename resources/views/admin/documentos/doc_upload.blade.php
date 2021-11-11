@@ -37,7 +37,7 @@
         <div class="form-group">
             <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
             {{ $empresa[0]->CODIGO }} - <?php echo utf8_encode($empresa[0]->NOMBREREAL) ?>
-            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',$empresa[0]->NOMBREREAL))?>">
+            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes($empresa[0]->NOMBREREAL)))?>">
             <input type="hidden" name="idDocumento"  id="idDocumento" value="">
             <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
         </div>
@@ -102,7 +102,7 @@
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>{{__('Archivo')}}</th>
+
                         <th>{{__('User')}}</th>
                         <th>{{__('Alta')}}</th>
                         <th>{{__('Detalle')}}</th>
@@ -112,7 +112,7 @@
                     <tfoot>
                     <tr>
                         <th>Id</th>
-                        <th>{{__('Archivo')}}</th>
+
                         <th>{{__('User')}}</th>
                         <th>{{__('Alta')}}</th>
                         <th>{{__('Detalle')}}</th>
@@ -124,19 +124,24 @@
                         <tr>
                             <td>{{ $otroDocumento->ID }}</td>
 
-                            <td>
-                                @if($otroDocumento->NOMBRE)
-                                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
-                                @endif
 
-                            </td>
 
                             <td>{{ $otroDocumento->UsuarioNT }}</td>
                             <td>{{($otroDocumento->FECHAALTA)?date('d/m/Y H:i', strtotime($otroDocumento->FECHAALTA)):''}}</td>
                             <td>{{ $otroDocumento->DETALLE }}</td>
                             <td>
-
-                                <a href="{{route('documentos.doc_upload',  array('documentoId' => $otroDocumento->ID))}}"><i class="fas fa-file-image fa-2x"></i></a>
+                                <div class="d-flex">
+                                @if($otroDocumento->NOMBRE)
+                                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-3x"></i></a>
+                                @endif
+                                    <form action="{{ route('documentos.destroy', array('id' => $otroDocumento->ID)) }}" method="POST" onsubmit="return  ConfirmDelete()">
+                                        @csrf
+                                        @method('delete')
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-danger m-1"><i class="fas fa-trash-alt fa"></i></button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -152,7 +157,14 @@
 
     <script>
 
-
+        function ConfirmDelete()
+        {
+            var x = confirm("Eliminar archivo?");
+            if (x)
+                return true;
+            else
+                return false;
+        }
 
         $(function() {
             document.getElementById("fileDJSEC").onchange = function() {

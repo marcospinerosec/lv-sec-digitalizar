@@ -147,8 +147,8 @@ class DocumentoController extends Controller
 
         ]);*/
 
-        // Validation
-        $request->validate([
+
+        $arrayValidation = [
             'DJSEC' => 'mimes:pdf|max:4096',
             'CUIT' => 'mimes:pdf|max:4096',
             'RTAFIP' => 'mimes:pdf|max:4096',
@@ -158,11 +158,46 @@ class DocumentoController extends Controller
             'CONTRATO' => 'mimes:pdf|max:4096',
             'F931' => 'mimes:pdf|max:4096',
             'documento' => 'mimes:pdf|max:4096'
-        ]);
+        ];
 
         $empresa = request('nombrereal');
 
         $idEmpresa = request('idEmpresa');
+
+        $newFileNameDocumento=null;
+        if (request('documento')){
+            //get the image from the form
+            $DocumentoF=$request->file('documento');
+            $fileNameWithTheExtension = $DocumentoF->getClientOriginalName();
+
+            //get the name of the file
+            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+
+            //get extension of the file
+            $extension = $DocumentoF->getClientOriginalExtension();
+
+            //create a new name for the file using the timestamp
+            $newFileNameDocumento = $empresa . '_'.date('Y_m_d_H_i_s').'.' . $extension;
+
+            //save the iamge onto a public directory into a separately folder
+            $path = $DocumentoF->storeAs('public/files', $newFileNameDocumento);
+
+            // dd($extension);
+        }elseif (request('docEscaneado')){
+            $pos      = strripos(request('docEscaneado'), '/');
+            $newFileNameDocumento = str_replace('"]', '', substr(request('docEscaneado'), $pos));
+        }
+        $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
+        $detalle = (request('Detalle'))?request('Detalle'):null;
+        if (request('procesarDetalle')){
+            $arrayValidation['Detalle'] = 'required';
+        }
+
+        //Log::debug((array) $arrayValidation);
+        // Validation
+        $request->validate($arrayValidation);
+
+
         $newFileNameDJSEC=null;
         if (request('DJSEC')){
             //get the image from the form
@@ -350,29 +385,7 @@ class DocumentoController extends Controller
             $pos      = strripos(request('F931Escaneado'), '/');
             $newFileNameF931 = str_replace('"]', '', substr(request('F931Escaneado'), $pos));
         }
-        $newFileNameDocumento=null;
-        if (request('documento')){
-            //get the image from the form
-            $DocumentoF=$request->file('documento');
-            $fileNameWithTheExtension = $DocumentoF->getClientOriginalName();
 
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $DocumentoF->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameDocumento = $empresa . '_'.date('Y_m_d_H_i_s').'.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            $path = $DocumentoF->storeAs('public/files', $newFileNameDocumento);
-
-            // dd($extension);
-        }elseif (request('docEscaneado')){
-            $pos      = strripos(request('docEscaneado'), '/');
-            $newFileNameDocumento = str_replace('"]', '', substr(request('docEscaneado'), $pos));
-        }
         if (!$newFileNameDJSEC){
             $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DJSEC.pdf' ;
 
@@ -461,8 +474,8 @@ class DocumentoController extends Controller
         $idDNI = (request('DNIID'))?request('DNIID'):null;
         $idCONTRATO = (request('CONTRATOID'))?request('CONTRATOID'):null;
         $idF931 = (request('F931ID'))?request('F931ID'):null;
-        $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
-        $detalle = (request('Detalle'))?request('Detalle'):null;
+
+
         try{
 
                 $insertarDocumento=DB::select(DB::raw("exec GEN_ACTUALIZARDocumentos :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10, :Param11, :Param12, :Param13, :Param14, :Param15, :Param16, :Param17, :Param18, :Param19, :Param20, :Param21"),[
@@ -550,8 +563,38 @@ class DocumentoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->query('id');
+        $documento=DB::select(DB::raw("exec GEN_TraerDocumentoPorId :Param1"),[
+            ':Param1' => $id,
+
+        ]);
+
+        //Log::debug((array) $documento);
+
+        $oldImage = storage_path() . '/app/public/files/'. trim($documento[0]->NOMBRE)  ;
+
+        if(file_exists($oldImage)){
+            //delete the image
+            unlink($oldImage);
+        }
+
+        $user = $request->session()->get('user');
+        try{
+            $documento=DB::select(DB::raw("exec GEN_BorrarDocumento :Param1, :Param2"),[
+                ':Param1' => $id,
+                ':Param2' => $user->id,
+            ]);
+        }
+        catch(QueryException $ex){
+            $error = $ex->getMessage();
+            $ok=0;
+
+        }
+
+
+
+        return redirect()->route('documentos.doc_upload', ['empresaId' => $documento[0]->IDEMPRESA])->with('success','Registro eliminado satisfactoriamente');
     }
 }

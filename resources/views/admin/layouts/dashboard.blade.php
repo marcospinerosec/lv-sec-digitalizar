@@ -240,43 +240,52 @@
             document.getElementById('hrefDJSEC').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_DJSEC.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('DJSECEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 1;
+            document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("CUIT")!=-1){
             document.getElementById('hrefCUIT').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_CUIT.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('CUITEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 2;
+            document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("RTAFIP")!=-1){
             document.getElementById('hrefRTAFIP').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_RTAFIP.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('RTAFIPEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 3;
+            document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("HABMUN")!=-1){
             document.getElementById('hrefHABMUN').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_HABMUN.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('HABMUNEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 4;
+            document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("JORLAB")!=-1){
             document.getElementById('hrefJORLAB').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_JORLAB.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('JORLABEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 5;
+            document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("DNI")!=-1){
             document.getElementById('hrefDNI').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_DNI.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('DNIEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 6;
+            document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("CONTRATO")!=-1){
             document.getElementById('hrefCONTRATO').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_CONTRATO.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('CONTRATOEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 7;
+            document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("F931")!=-1){
             document.getElementById('hrefF931').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_F931.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('F931Escaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 8;
+            document.getElementById("formDoc").submit();
         }
-        document.getElementById("formDoc").submit();
+
+        document.getElementById('docEscaneado').value = scanner.getSaveResponse(response);
 
     }
     function quitar(nameFile) {

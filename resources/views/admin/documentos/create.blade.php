@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form id="formDoc" method="POST" action="{{route('documentos.store')}}" enctype="multipart/form-data">
+    <form method="POST" action="{{route('documentos.store')}}" enctype="multipart/form-data">
         @method('PATCH')
         @csrf()
 
@@ -23,6 +23,7 @@
             {{ $empresa[0]->CODIGO }} - <?php echo utf8_encode($empresa[0]->NOMBREREAL) ?>
             <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',$empresa[0]->NOMBREREAL))?>">
             <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
+            <input type="hidden" name="procesarDetalle"  value="1">
         </div>
 
         <div class="form-group">
@@ -44,6 +45,8 @@
 
         <div class="form-group pt-2">
             <input class="btn btn-primary" type="submit" value="{{__('Submit')}}">
+
+            <a href="{{route('documentos.doc_upload',array('empresaId'=>$empresa[0]->IDEMPRESA)) }}" class="btn btn-success m-1">Volver</a>
         </div>
     </form>
 

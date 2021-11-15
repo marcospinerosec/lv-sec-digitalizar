@@ -65,7 +65,7 @@
 
             <input type="file" name="<?php echo trim($documento->SIGLA);?>" id="file<?php echo trim($documento->SIGLA);?>" class="form-control-file" id="profile-img" value="">
 
-                <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',$empresa[0]->NOMBREREAL))?>_{{$documento->SIGLA}}');" class='btn btn-success'>Escanear</button>
+                <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>_{{$documento->SIGLA}}');" class='btn btn-success'>Escanear</button>
             <span id="href<?php echo trim($documento->SIGLA);?>">
                  @if($nombreDoc)
                     <a target="_blank" href="{{ asset('../storage/app/public/files/'.$nombreDoc) }}"><i class="fas fa-file-pdf fa-2x"></i></a>

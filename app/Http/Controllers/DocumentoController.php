@@ -385,85 +385,90 @@ class DocumentoController extends Controller
             $pos      = strripos(request('F931Escaneado'), '/');
             $newFileNameF931 = str_replace('"]', '', substr(request('F931Escaneado'), $pos));
         }
-
-        if (!$newFileNameDJSEC){
-            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DJSEC.pdf' ;
-
-            if(file_exists($oldImage)){
-                //delete the image
-                unlink($oldImage);
-            }
-
+        if (request('procesarDetalle')){
 
         }
-        if (!$newFileNameCUIT){
-            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CUIT.pdf';
+        else{
+            if (!$newFileNameDJSEC){
+                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DJSEC.pdf' ;
 
-            if(file_exists($oldImage)){
-                //delete the image
-                unlink($oldImage);
+                if(file_exists($oldImage)){
+                    //delete the image
+                    unlink($oldImage);
+                }
+
+
             }
+            if (!$newFileNameCUIT){
+                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CUIT.pdf';
 
-        }
-        if (!$newFileNameRTAFIP){
-            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_RTAFIP.pdf';
+                if(file_exists($oldImage)){
+                    //delete the image
+                    unlink($oldImage);
+                }
 
-            if(file_exists($oldImage)){
-                //delete the image
-                unlink($oldImage);
             }
+            if (!$newFileNameRTAFIP){
+                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_RTAFIP.pdf';
 
-        }
-        if (!$newFileNameHABMUN){
-            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_HABMUN.pdf' ;
+                if(file_exists($oldImage)){
+                    //delete the image
+                    unlink($oldImage);
+                }
 
-            if(file_exists($oldImage)){
-                //delete the image
-                unlink($oldImage);
             }
+            if (!$newFileNameHABMUN){
+                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_HABMUN.pdf' ;
+
+                if(file_exists($oldImage)){
+                    //delete the image
+                    unlink($oldImage);
+                }
 
 
-        }
-        if (!$newFileNameJORLAB){
-            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_JORLAB.pdf' ;
-
-            if(file_exists($oldImage)){
-                //delete the image
-                unlink($oldImage);
             }
+            if (!$newFileNameJORLAB){
+                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_JORLAB.pdf' ;
+
+                if(file_exists($oldImage)){
+                    //delete the image
+                    unlink($oldImage);
+                }
 
 
-        }
-        if (!$newFileNameDNI){
-            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DNI.pdf' ;
-
-            if(file_exists($oldImage)){
-                //delete the image
-                unlink($oldImage);
             }
+            if (!$newFileNameDNI){
+                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DNI.pdf' ;
+
+                if(file_exists($oldImage)){
+                    //delete the image
+                    unlink($oldImage);
+                }
 
 
-        }
-        if (!$newFileNameCONTRATO){
-            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CONTRATO.pdf' ;
-
-            if(file_exists($oldImage)){
-                //delete the image
-                unlink($oldImage);
             }
+            if (!$newFileNameCONTRATO){
+                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CONTRATO.pdf' ;
+
+                if(file_exists($oldImage)){
+                    //delete the image
+                    unlink($oldImage);
+                }
 
 
-        }
-        if (!$newFileNameF931){
-            $oldImage = storage_path() . '/app/public/files/'. $empresa . '_F931.pdf' ;
-
-            if(file_exists($oldImage)){
-                //delete the image
-                unlink($oldImage);
             }
+            if (!$newFileNameF931){
+                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_F931.pdf' ;
+
+                if(file_exists($oldImage)){
+                    //delete the image
+                    unlink($oldImage);
+                }
 
 
+            }
         }
+
         $user = $request->session()->get('user');
 
         $idDJSEC = (request('DJSECID'))?request('DJSECID'):null;

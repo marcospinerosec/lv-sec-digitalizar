@@ -33,7 +33,7 @@
 
             <input type="file" name="documento" id="fileDocumento" class="form-control-file" id="profile-img" value="">
 
-            <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',$empresa[0]->NOMBREREAL))?>_{{ date('Y_m_d_H_i_s') }}');" class='btn btn-success'>Escanear</button>
+            <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>_{{ date('Y_m_d_H_i_s') }}');" class='btn btn-success'>Escanear</button>
             <span id="hrefDocumento">
 
             </span>

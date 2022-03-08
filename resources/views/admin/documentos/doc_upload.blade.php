@@ -63,12 +63,13 @@
             <input type="hidden" name="<?php echo trim($documento->SIGLA);?>Escaneado" id="<?php echo trim($documento->SIGLA);?>Escaneado" value="{{$nombreDoc}}">
             <input type="hidden" name="<?php echo trim($documento->SIGLA);?>ID" id="<?php echo trim($documento->SIGLA);?>ID" value="{{$idDoc}}">
 
-            <input type="file" name="<?php echo trim($documento->SIGLA);?>" id="file<?php echo trim($documento->SIGLA);?>" class="form-control-file" id="profile-img" value="">
+            <!--<input type="file" name="<?php echo trim($documento->SIGLA);?>" id="file<?php echo trim($documento->SIGLA);?>" class="form-control-file" id="profile-img" value="">
 
-                <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>_{{$documento->SIGLA}}');" class='btn btn-success'>Escanear</button>
+                <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>_{{$documento->SIGLA}}');" class='btn btn-success'>Escanear</button>-->
             <span id="href<?php echo trim($documento->SIGLA);?>">
+                <a href="{{route('documentos.edit',  array('empresaId' => $empresa[0]->IDEMPRESA,'sigla'=>trim($documento->SIGLA),'nombre'=>trim($documento->NOMBRE),'idDoc'=>$idDoc))}}"><i class="fas fa-upload fa-2x"></i></a>
                  @if($nombreDoc)
-                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$nombreDoc) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
+                    <a target="_blank" href="{{ asset('../nas/files/'.$nombreDoc) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
                     <a href="#" onClick="quitar('<?php echo trim($documento->SIGLA);?>')"><i class="fas fa-trash-alt fa-2x"></i></a>
                 @endif
             </span>
@@ -132,14 +133,14 @@
                             <td>
                                 <div class="d-flex">
                                 @if($otroDocumento->NOMBRE)
-                                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-3x"></i></a>
+                                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
                                 @endif
                                     <form action="{{ route('documentos.destroy', array('id' => $otroDocumento->ID)) }}" method="POST" onsubmit="return  ConfirmDelete()">
                                         @csrf
                                         @method('delete')
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <button class="btn btn-danger m-1"><i class="fas fa-trash-alt fa"></i></button>
+                                        <button class="btn btn-primary m-1"><i class="fas fa-trash-alt fa"></i></button>
                                     </form>
                                 </div>
                             </td>

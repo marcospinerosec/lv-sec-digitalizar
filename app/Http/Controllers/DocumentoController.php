@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
 use DB;
 use App\Models\User;
 
+use Illuminate\Support\Facades\Storage;
+
 class DocumentoController extends Controller
 {
 
@@ -148,7 +150,7 @@ class DocumentoController extends Controller
         ]);*/
 
 
-        $arrayValidation = [
+        /*$arrayValidation = [
             'DJSEC' => 'mimes:pdf|max:4096',
             'CUIT' => 'mimes:pdf|max:4096',
             'RTAFIP' => 'mimes:pdf|max:4096',
@@ -158,7 +160,7 @@ class DocumentoController extends Controller
             'CONTRATO' => 'mimes:pdf|max:4096',
             'F931' => 'mimes:pdf|max:4096',
             'documento' => 'mimes:pdf|max:4096'
-        ];
+        ];*/
 
         $empresa = request('nombrereal');
 
@@ -190,9 +192,47 @@ class DocumentoController extends Controller
         $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
         $detalle = (request('Detalle'))?request('Detalle'):null;
         if (request('procesarDetalle')){
+            $arrayValidation['documento'] = 'required';
             $arrayValidation['Detalle'] = 'required';
         }
 
+        //Log::debug((array) $arrayValidation);
+        if (request('DJSECVALIDAR')){
+            $arrayValidation['DJSEC'] = 'mimes:pdf|max:4096|required';
+
+        }
+        if (request('CUITVALIDAR')){
+            $arrayValidation['CUIT'] = 'required';
+
+        }
+        if (request('RTAFIPVALIDAR')){
+            $arrayValidation['RTAFIP'] = 'required';
+
+        }
+        if (request('HABMUNVALIDAR')){
+            $arrayValidation['HABMUN'] = 'required';
+
+        }
+        if (request('HABMUNVALIDAR')){
+            $arrayValidation['HABMUN'] = 'required';
+
+        }
+        if (request('JORLABVALIDAR')){
+            $arrayValidation['JORLAB'] = 'required';
+
+        }
+        if (request('DNIVALIDAR')){
+            $arrayValidation['DNI'] = 'required';
+
+        }
+        if (request('CONTRATOVALIDAR')){
+            $arrayValidation['CONTRATO'] = 'required';
+
+        }
+        if (request('F931VALIDAR')){
+            $arrayValidation['F931'] = 'required';
+
+        }
         //Log::debug((array) $arrayValidation);
         // Validation
         $request->validate($arrayValidation);
@@ -214,7 +254,11 @@ class DocumentoController extends Controller
             $newFileNameDJSEC = $empresa . '_DJSEC.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
-            $path = $DJSECF->storeAs('public/files', $newFileNameDJSEC);
+            //$path = $DJSECF->storeAs('public/files', $newFileNameDJSEC);
+            $store  = Storage::disk('nas')->put($newFileNameDJSEC, File::get($DJSECF));
+
+            /*$path = base_path() . '/nas/files/';
+            $DJSECF->move($path, $newFileNameDJSEC);*/
 
             // dd($extension);
         }
@@ -238,7 +282,9 @@ class DocumentoController extends Controller
             $newFileNameCUIT = $empresa . '_CUIT.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
-            $path = $CUITF->storeAs('public/files', $newFileNameCUIT);
+            //$path = $CUITF->storeAs('public/files', $newFileNameCUIT);
+
+            $store  = Storage::disk('nas')->put($newFileNameCUIT, File::get($CUITF));
 
             // dd($extension);
         }
@@ -262,7 +308,9 @@ class DocumentoController extends Controller
             $newFileNameRTAFIP = $empresa . '_RTAFIP.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
-            $path = $RTAFIPF->storeAs('public/files', $newFileNameRTAFIP);
+            //$path = $RTAFIPF->storeAs('public/files', $newFileNameRTAFIP);
+
+            $store  = Storage::disk('nas')->put($newFileNameRTAFIP, File::get($RTAFIPF));
 
             // dd($extension);
         }
@@ -309,7 +357,9 @@ class DocumentoController extends Controller
             $newFileNameJORLAB = $empresa . '_JORLAB.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
-            $path = $JORLABF->storeAs('public/files', $newFileNameJORLAB);
+            //$path = $JORLABF->storeAs('public/files', $newFileNameJORLAB);
+
+            $store  = Storage::disk('nas')->put($newFileNameJORLAB, File::get($JORLABF));
 
             // dd($extension);
         }elseif (request('JORLABEscaneado')){
@@ -332,7 +382,9 @@ class DocumentoController extends Controller
             $newFileNameDNI = $empresa . '_DNI.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
-            $path = $DNIF->storeAs('public/files', $newFileNameDNI);
+            //$path = $DNIF->storeAs('public/files', $newFileNameDNI);
+
+            $store  = Storage::disk('nas')->put($newFileNameDNI, File::get($DNIF));
 
             // dd($extension);
         }elseif (request('DNIEscaneado')){
@@ -355,7 +407,9 @@ class DocumentoController extends Controller
             $newFileNameCONTRATO = $empresa . '_CONTRATO.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
-            $path = $CONTRATOF->storeAs('public/files', $newFileNameCONTRATO);
+            //$path = $CONTRATOF->storeAs('public/files', $newFileNameCONTRATO);
+
+            $store  = Storage::disk('nas')->put($newFileNameCONTRATO, File::get($CONTRATOF));
 
             // dd($extension);
         }elseif (request('CONTRATOEscaneado')){
@@ -378,7 +432,9 @@ class DocumentoController extends Controller
             $newFileNameF931 = $empresa . '_F931.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
-            $path = $F931F->storeAs('public/files', $newFileNameF931);
+            //$path = $F931F->storeAs('public/files', $newFileNameF931);
+
+            $store  = Storage::disk('nas')->put($newFileNameF931, File::get($F931F));
 
             // dd($extension);
         }elseif (request('F931Escaneado')){
@@ -390,7 +446,7 @@ class DocumentoController extends Controller
         }
         else{
             if (!$newFileNameDJSEC){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DJSEC.pdf' ;
+                $oldImage = base_path().'/nas/files/'. $empresa . '_DJSEC.pdf' ;
 
                 if(file_exists($oldImage)){
                     //delete the image
@@ -400,7 +456,7 @@ class DocumentoController extends Controller
 
             }
             if (!$newFileNameCUIT){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CUIT.pdf';
+                $oldImage = base_path().'/nas/files/'. $empresa . '_CUIT.pdf';
 
                 if(file_exists($oldImage)){
                     //delete the image
@@ -409,7 +465,7 @@ class DocumentoController extends Controller
 
             }
             if (!$newFileNameRTAFIP){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_RTAFIP.pdf';
+                $oldImage = base_path().'/nas/files/'. $empresa . '_RTAFIP.pdf';
 
                 if(file_exists($oldImage)){
                     //delete the image
@@ -418,7 +474,7 @@ class DocumentoController extends Controller
 
             }
             if (!$newFileNameHABMUN){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_HABMUN.pdf' ;
+                $oldImage = base_path().'/nas/files/'. $empresa . '_HABMUN.pdf' ;
 
                 if(file_exists($oldImage)){
                     //delete the image
@@ -428,7 +484,7 @@ class DocumentoController extends Controller
 
             }
             if (!$newFileNameJORLAB){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_JORLAB.pdf' ;
+                $oldImage = base_path().'/nas/files/'. $empresa . '_JORLAB.pdf' ;
 
                 if(file_exists($oldImage)){
                     //delete the image
@@ -438,7 +494,7 @@ class DocumentoController extends Controller
 
             }
             if (!$newFileNameDNI){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_DNI.pdf' ;
+                $oldImage = base_path().'/nas/files/'. $empresa . '_DNI.pdf' ;
 
                 if(file_exists($oldImage)){
                     //delete the image
@@ -448,7 +504,7 @@ class DocumentoController extends Controller
 
             }
             if (!$newFileNameCONTRATO){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_CONTRATO.pdf' ;
+                $oldImage = base_path().'/nas/files/'. $empresa . '_CONTRATO.pdf' ;
 
                 if(file_exists($oldImage)){
                     //delete the image
@@ -458,7 +514,7 @@ class DocumentoController extends Controller
 
             }
             if (!$newFileNameF931){
-                $oldImage = storage_path() . '/app/public/files/'. $empresa . '_F931.pdf' ;
+                $oldImage = base_path().'/nas/files/'. $empresa . '_F931.pdf' ;
 
                 if(file_exists($oldImage)){
                     //delete the image
@@ -510,7 +566,7 @@ class DocumentoController extends Controller
 
 
 
-
+            $ok=1;
 
 
         }
@@ -520,8 +576,16 @@ class DocumentoController extends Controller
 
         }
 
+        if($ok){
+            $suc='success';
+            $detalle = 'Documentos actualizados!';
+        }
+        else{
+            $suc='error';
+            $detalle = $error;
+        }
 
-        $redirect = redirect()->route('documentos.doc_upload', ['empresaId' => $idEmpresa])->with('success', 'Documentos actualizados!');
+        $redirect = redirect()->route('documentos.doc_upload', ['empresaId' => $idEmpresa])->with($suc, $detalle);
 
 
 
@@ -545,9 +609,47 @@ class DocumentoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
-        //
+        $empresa_id= $request->query('empresaId');
+        $nombre= $request->query('nombre');
+        $sigla= $request->query('sigla');
+        $idDoc= $request->query('idDoc');
+        $empresa=DB::select(DB::raw("exec GEN_TraerEmpresaPorId :Param1"),[
+            ':Param1' => $empresa_id,
+
+        ]);
+        switch ($sigla) {
+            case 'DJSEC':
+                $idDocumento=1;
+                break;
+            case 'CUIT':
+                $idDocumento=2;
+                break;
+            case 'RTAFIP':
+                $idDocumento=3;
+                break;
+            case 'HABMUN':
+                $idDocumento=4;
+                break;
+            case 'JORLAB':
+                $idDocumento=5;
+                break;
+            case 'DNI':
+                $idDocumento=6;
+                break;
+            case 'CONTRATO':
+                $idDocumento=7;
+                break;
+            case 'F931':
+                $idDocumento=8;
+                break;
+
+        }
+
+
+
+        return view('admin.documentos.edit', ['empresa' => $empresa,'nombre' => $nombre,'sigla' => $sigla,'idDocumento' => $idDocumento,'idDoc' => $idDoc]);
     }
 
     /**
@@ -578,7 +680,7 @@ class DocumentoController extends Controller
 
         //Log::debug((array) $documento);
 
-        $oldImage = storage_path() . '/app/public/files/'. trim($documento[0]->NOMBRE)  ;
+        $oldImage = base_path().'/nas/files/'. trim($documento[0]->NOMBRE)  ;
 
         if(file_exists($oldImage)){
             //delete the image

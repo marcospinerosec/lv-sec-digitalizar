@@ -31,6 +31,7 @@ Route::group(['middleware' => ['web', 'AuthenticateWithSession']], function () {
     Route::get('doc_upload', 'App\Http\Controllers\DocumentoController@page')->name('documentos.doc_upload');
     Route::patch('store', 'App\Http\Controllers\DocumentoController@store')->name('documentos.store');
     Route::get('create', 'App\Http\Controllers\DocumentoController@create')->name('documentos.create');
+    Route::get('edit', 'App\Http\Controllers\DocumentoController@edit')->name('documentos.edit');
 
     Route::delete('destroy', 'App\Http\Controllers\DocumentoController@destroy')->name('documentos.destroy');
 

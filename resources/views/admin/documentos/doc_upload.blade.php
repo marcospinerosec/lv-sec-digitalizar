@@ -36,8 +36,8 @@
 
         <div class="form-group">
             <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
-            {{ $empresa[0]->CODIGO }} - <?php echo utf8_encode($empresa[0]->NOMBREREAL) ?>
-            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>">
+            {{ $empresa[0]->CODIGO }} - <?php echo ($empresa[0]->NOMBREREAL) ?>
+            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(($empresa[0]->NOMBREREAL))))?>">
             <input type="hidden" name="idDocumento"  id="idDocumento" value="">
             <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
         </div>
@@ -59,16 +59,17 @@
             @endforeach
 
         <div class="form-group">
-            <label for="image"><strong><?php echo utf8_encode($documento->NOMBRE); ?></strong></label>
+            <label for="image"><strong><?php echo ($documento->NOMBRE); ?></strong></label>
             <input type="hidden" name="<?php echo trim($documento->SIGLA);?>Escaneado" id="<?php echo trim($documento->SIGLA);?>Escaneado" value="{{$nombreDoc}}">
             <input type="hidden" name="<?php echo trim($documento->SIGLA);?>ID" id="<?php echo trim($documento->SIGLA);?>ID" value="{{$idDoc}}">
 
-            <input type="file" name="<?php echo trim($documento->SIGLA);?>" id="file<?php echo trim($documento->SIGLA);?>" class="form-control-file" id="profile-img" value="">
+            <!--<input type="file" name="<?php echo trim($documento->SIGLA);?>" id="file<?php echo trim($documento->SIGLA);?>" class="form-control-file" id="profile-img" value="">
 
-                <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>_{{$documento->SIGLA}}');" class='btn btn-success'>Escanear</button>
+                <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(($empresa[0]->NOMBREREAL))))?>_{{$documento->SIGLA}}');" class='btn btn-success'>Escanear</button>-->
             <span id="href<?php echo trim($documento->SIGLA);?>">
+                <a href="{{route('documentos.edit',  array('empresaId' => $empresa[0]->IDEMPRESA,'sigla'=>trim($documento->SIGLA),'nombre'=>trim($documento->NOMBRE)))}}"><i class="fas fa-upload fa-2x"></i></a>
                  @if($nombreDoc)
-                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$nombreDoc) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
+                    <a target="_blank" href="{{ asset('../nas/files/'.$nombreDoc) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
                     <a href="#" onClick="quitar('<?php echo trim($documento->SIGLA);?>')"><i class="fas fa-trash-alt fa-2x"></i></a>
                 @endif
             </span>
@@ -126,20 +127,21 @@
 
 
 
-                            <td><?php echo utf8_encode($otroDocumento->UsuarioNT); ?></td>
+                            <td><?php echo ($otroDocumento->UsuarioNT); ?></td>
                             <td>{{($otroDocumento->FECHAALTA)?date('d/m/Y H:i', strtotime($otroDocumento->FECHAALTA)):''}}</td>
                             <td>{{ $otroDocumento->DETALLE }}</td>
                             <td>
                                 <div class="d-flex">
                                 @if($otroDocumento->NOMBRE)
-                                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-3x"></i></a>
+                                    <a target="_blank" href="{{ asset('../nas/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
                                 @endif
-                                    <form action="{{ route('documentos.destroy', array('id' => $otroDocumento->ID)) }}" method="POST" onsubmit="return  ConfirmDelete()">
+                                    <form name="formDelete" id="formDelete" action="{{ route('documentos.destroy', array('id' => $otroDocumento->ID)) }}" method="POST" onsubmit="return  ConfirmDelete()">
                                         @csrf
                                         @method('delete')
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <button class="btn btn-danger m-1"><i class="fas fa-trash-alt fa"></i></button>
+                                        <!--<button class="btn btn-primary m-1"><i class="fas fa-trash-alt fa"></i></button>-->
+                                        <a href="#" onClick="return  ConfirmDelete();"><i class="fas fa-trash-alt fa-2x"></i></a>
                                     </form>
                                 </div>
                             </td>
@@ -160,8 +162,11 @@
         function ConfirmDelete()
         {
             var x = confirm("Eliminar archivo?");
-            if (x)
+            if (x){
+                document.getElementById('formDelete').submit();
                 return true;
+            }
+
             else
                 return false;
         }

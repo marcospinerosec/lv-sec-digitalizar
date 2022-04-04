@@ -29,59 +29,9 @@
 
 
 
+    <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
+    {{ $empresa[0]->CODIGO }} - <?php echo ($empresa[0]->NOMBREREAL) ?>
 
-    <form id="formDoc" method="POST" action="{{route('documentos.store')}}" enctype="multipart/form-data">
-        @method('PATCH')
-        @csrf()
-
-        <div class="form-group">
-            <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
-            {{ $empresa[0]->CODIGO }} - <?php echo ($empresa[0]->NOMBREREAL) ?>
-            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(($empresa[0]->NOMBREREAL))))?>">
-            <input type="hidden" name="idDocumento"  id="idDocumento" value="">
-            <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
-        </div>
-        <hr>
-        @foreach($documentos as $documento)
-            @php
-            $nombreDoc='';
-            $idDoc='';
-            @endphp
-            @foreach($documentosEmpresas as $documentoEmpresa)
-
-                    @php
-                    if ($documento->ID==$documentoEmpresa->IDDOCUMENTO){
-                        $nombreDoc=$documentoEmpresa->NOMBRE;
-                        $idDoc=$documentoEmpresa->ID;
-                    }
-                    @endphp
-
-            @endforeach
-
-        <div class="form-group">
-            <label for="image"><strong><?php echo ($documento->NOMBRE); ?></strong></label>
-            <input type="hidden" name="<?php echo trim($documento->SIGLA);?>Escaneado" id="<?php echo trim($documento->SIGLA);?>Escaneado" value="{{$nombreDoc}}">
-            <input type="hidden" name="<?php echo trim($documento->SIGLA);?>ID" id="<?php echo trim($documento->SIGLA);?>ID" value="{{$idDoc}}">
-
-            <!--<input type="file" name="<?php echo trim($documento->SIGLA);?>" id="file<?php echo trim($documento->SIGLA);?>" class="form-control-file" id="profile-img" value="">
-
-                <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(($empresa[0]->NOMBREREAL))))?>_{{$documento->SIGLA}}');" class='btn btn-success'>Escanear</button>-->
-            <span id="href<?php echo trim($documento->SIGLA);?>">
-                <a href="{{route('documentos.edit',  array('empresaId' => $empresa[0]->IDEMPRESA,'sigla'=>trim($documento->SIGLA),'nombre'=>trim($documento->NOMBRE)))}}"><i class="fas fa-upload fa-2x"></i></a>
-                 @if($nombreDoc)
-                    <a target="_blank" href="{{ asset('../nas/files/'.$nombreDoc) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
-                    <a href="#" onClick="quitar('<?php echo trim($documento->SIGLA);?>')"><i class="fas fa-trash-alt fa-2x"></i></a>
-                @endif
-            </span>
-        </div>
-        <hr>
-        @endforeach
-        <div id="server_response"></div>
-        <div id="response"></div>
-        <!--<div class="form-group pt-2">
-            <input class="btn btn-primary" type="submit" value="{{__('Submit')}}">
-        </div>-->
-    </form>
     <div class="row py-lg-2">
 
 
@@ -94,7 +44,7 @@
     <div class="card mb-3">
         <div class="card-header">
             <i class="fas fa-table"></i>
-            {{__('Otros Documentos')}}
+            {{__('Documentos')}}
 
         </div>
         <div class="card-body">
@@ -103,45 +53,53 @@
                     <thead>
                     <tr>
                         <th>Id</th>
-
-                        <th>{{__('User')}}</th>
-                        <th>{{__('Alta')}}</th>
+                        <th>{{__('Tipo Documento')}}</th>
                         <th>{{__('Detalle')}}</th>
+                        <th>{{__('Alta')}}</th>
+                        <th>{{__('User')}}</th>
                         <th>{{__('Tools')}}</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
                         <th>Id</th>
-
-                        <th>{{__('User')}}</th>
-                        <th>{{__('Alta')}}</th>
+                        <th>{{__('Tipo Documento')}}</th>
                         <th>{{__('Detalle')}}</th>
+                        <th>{{__('Alta')}}</th>
+                        <th>{{__('User')}}</th>
+
+
                         <th>{{__('Tools')}}</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    @foreach ($otrosDocumentos as $otroDocumento)
+                    @foreach ($documentosEmpresas as $documentoEmpresa)
                         <tr>
-                            <td>{{ $otroDocumento->ID }}</td>
+                            <td>{{ $documentoEmpresa->ID }}</td>
+                            <td>{{ $documentoEmpresa->TIPODOCUMENTO }}</td>
+                            <td>{{ $documentoEmpresa->DETALLE }}</td>
+                            <td>{{($documentoEmpresa->FECHAALTA)?date('d/m/Y H:i', strtotime($documentoEmpresa->FECHAALTA)):''}}</td>
+                            <td><?php echo ($documentoEmpresa->UsuarioNT); ?></td>
 
 
 
-                            <td><?php echo ($otroDocumento->UsuarioNT); ?></td>
-                            <td>{{($otroDocumento->FECHAALTA)?date('d/m/Y H:i', strtotime($otroDocumento->FECHAALTA)):''}}</td>
-                            <td>{{ $otroDocumento->DETALLE }}</td>
+
                             <td>
                                 <div class="d-flex">
-                                @if($otroDocumento->NOMBRE)
-                                    <a target="_blank" href="{{ asset('../nas/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
-                                @endif
-                                    <form name="formDelete" id="formDelete" action="{{ route('documentos.destroy', array('id' => $otroDocumento->ID)) }}" method="POST" onsubmit="return  ConfirmDelete()">
+                                    @if($documentoEmpresa->NOMBRE)
+
+                                        <a target="_blank" href="{{ asset('../nas/files/'.$documentoEmpresa->NOMBRE ) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
+
+                                    @endif
+                                    <form name="formDelete" id="formDelete" action="{{ route('documentos.destroy', array('id' => $documentoEmpresa->ID)) }}" method="POST" onsubmit="return  ConfirmDelete()">
                                         @csrf
                                         @method('delete')
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
                                         <!--<button class="btn btn-primary m-1"><i class="fas fa-trash-alt fa"></i></button>-->
                                         <a href="#" onClick="return  ConfirmDelete();"><i class="fas fa-trash-alt fa-2x"></i></a>
+
                                     </form>
                                 </div>
                             </td>
@@ -172,38 +130,7 @@
         }
 
         $(function() {
-            document.getElementById("fileDJSEC").onchange = function() {
-                document.getElementById('idDocumento').value = 1;
-                document.getElementById("formDoc").submit();
-            };
-            document.getElementById("fileCUIT").onchange = function() {
-                document.getElementById('idDocumento').value = 2;
-                document.getElementById("formDoc").submit();
-            };
-            document.getElementById("fileRTAFIP").onchange = function() {
-                document.getElementById('idDocumento').value = 3;
-                document.getElementById("formDoc").submit();
-            };
-            document.getElementById("fileHABMUN").onchange = function() {
-                document.getElementById('idDocumento').value = 4;
-                document.getElementById("formDoc").submit();
-            };
-            document.getElementById("fileJORLAB").onchange = function() {
-                document.getElementById('idDocumento').value = 5;
-                document.getElementById("formDoc").submit();
-            };
-            document.getElementById("fileDNI").onchange = function() {
-                document.getElementById('idDocumento').value = 6;
-                document.getElementById("formDoc").submit();
-            };
-            document.getElementById("fileCONTRATO").onchange = function() {
-                document.getElementById('idDocumento').value = 7;
-                document.getElementById("formDoc").submit();
-            };
-            document.getElementById("fileF931").onchange = function() {
-                document.getElementById('idDocumento').value = 8;
-                document.getElementById("formDoc").submit();
-            };
+
             function readURL(input) {
                 if (input.files && input.files[0]) {
                     var reader = new FileReader();

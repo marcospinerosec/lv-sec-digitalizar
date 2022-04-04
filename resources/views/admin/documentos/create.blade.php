@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{route('documentos.store')}}" enctype="multipart/form-data">
+    <form method="POST"  action="{{route('documentos.store')}}" enctype="multipart/form-data">
         @method('PATCH')
         @csrf()
 
@@ -26,6 +26,24 @@
             <input type="hidden" name="procesarDetalle"  value="1">
         </div>
 
+        <div class="form-group" style="display: flex;">
+            <label for="content"><strong>{{__('ID Documento')}}</strong></label>
+            <select class="form-control" name="idDocumento" id="idDocumento" style="width: 300px;">
+                <option value="">{{__('Select')}}...</option>
+                @foreach ($documentos as $documento)
+
+                    @if(old('idDocumento') == $documento->ID)
+
+                        <option data-role-id="{{$documento->ID}}" value="{{$documento->ID}}" selected><?php echo $documento->NOMBRE; ?></option>
+                    @else
+                        <option data-role-id="{{$documento->ID}}" value="{{$documento->ID}}"><?php echo $documento->NOMBRE; ?></option>
+                    @endif
+
+
+
+                @endforeach
+            </select>
+        </div>
         <div class="form-group">
             <label for="image"><strong>{{__('Documento')}}</strong></label>
             <input type="hidden" name="docEscaneado" id="docEscaneado" value="">

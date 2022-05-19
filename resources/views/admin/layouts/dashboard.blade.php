@@ -339,6 +339,7 @@
 
 
     }
+
 </script>
 
 @yield('js_user_page')

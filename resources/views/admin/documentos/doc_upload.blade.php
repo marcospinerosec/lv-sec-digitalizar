@@ -91,14 +91,14 @@
                                         <a target="_blank" href="{{ asset('../nas/files/'.$documentoEmpresa->NOMBRE ) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
 
                                     @endif
-                                    <form name="formDelete" id="formDelete" action="{{ route('documentos.destroy', array('id' => $documentoEmpresa->ID)) }}" method="POST" onsubmit="return  ConfirmDelete()">
+                                    <form name="formDelete" id="formDelete<?php echo $documentoEmpresa->ID; ?>" action="{{ route('documentos.destroy', array('id' => $documentoEmpresa->ID)) }}" method="POST" onsubmit="return  ConfirmDelete(<?php echo $documentoEmpresa->ID; ?>)">
                                         @csrf
                                         @method('delete')
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                                         <!--<button class="btn btn-primary m-1"><i class="fas fa-trash-alt fa"></i></button>-->
-                                        <a href="#" onClick="return  ConfirmDelete();"><i class="fas fa-trash-alt fa-2x"></i></a>
+                                        <a href="#" onClick="return  ConfirmDelete(<?php echo $documentoEmpresa->ID; ?>);"><i class="fas fa-trash-alt fa-2x"></i></a>
 
                                     </form>
                                 </div>
@@ -117,11 +117,11 @@
 
     <script>
 
-        function ConfirmDelete()
+        function ConfirmDelete(id)
         {
             var x = confirm("Eliminar archivo?");
             if (x){
-                document.getElementById('formDelete').submit();
+                document.getElementById('formDelete'+id).submit();
                 return true;
             }
 

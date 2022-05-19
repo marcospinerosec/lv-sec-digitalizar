@@ -162,8 +162,8 @@ class DocumentoController extends Controller
 
         $idEmpresa = request('idEmpresa');
 
-
-
+        $codigoEmpresa = request('codigoEmpresa');
+        $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
         $newFileNameDocumento=null;
         if (request('documento')){
 
@@ -178,7 +178,7 @@ class DocumentoController extends Controller
             $extension = $DocumentoF->getClientOriginalExtension();
 
             //create a new name for the file using the timestamp
-            $newFileNameDocumento = $empresa . '_'.date('Y_m_d_H_i_s').'.' . $extension;
+            $newFileNameDocumento = $codigoEmpresa.'_'.$idDocumento . '_'.date('Y_m_d_H_i_s').'.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
             //$path = $DocumentoF->storeAs('public/files', $newFileNameDocumento);
@@ -189,7 +189,7 @@ class DocumentoController extends Controller
             $pos      = strripos(request('docEscaneado'), '/');
             $newFileNameDocumento = str_replace('"]', '', substr(request('docEscaneado'), $pos));
         }
-        $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
+
         $detalle = (request('Detalle'))?request('Detalle'):null;
         if (request('procesarDetalle')){
             $arrayValidation['idDocumento'] = 'required';
@@ -346,7 +346,7 @@ class DocumentoController extends Controller
         ]);
 
         $idEmpresa = $documento[0]->IDEMPRESA;
-        //Log::debug((array) $documento);
+        Log::debug((array) $documento);
 
         $oldImage = base_path().'/nas/files/'. trim($documento[0]->NOMBRE)  ;
 

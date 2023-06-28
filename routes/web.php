@@ -39,6 +39,8 @@ Route::group(['middleware' => ['web', 'AuthenticateWithSession']], function () {
 
     Route::post('/uploadFile', [DocumentoController::class, 'uploadFile'])->name('uploadFile');
 
+    Route::get('debt', 'App\Http\Controllers\PagosApiController@debt')->name('pagos.debt');
+
 
 });
 

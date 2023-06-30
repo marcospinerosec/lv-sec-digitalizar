@@ -26,6 +26,8 @@ class SoapService
         return $headers;
     }
 
+
+
     public function hello($name)
     {
         return "Hello, $name!";
@@ -73,7 +75,43 @@ class SoapService
         if ($token === self::CLIENT_TOKEN) {
             // Realizar las operaciones o acciones requeridas
 
-            Log::info(print_r(json_encode($debt, JSON_FORCE_OBJECT), true));
+            function transformArray($array) {
+                // Recorrer el array y realizar la transformación deseada
+                foreach ($array as $key => $value) {
+                    // Verificar si el valor es un array y tiene una única clave llamada "item"
+                    if (is_array($value) && count($value) === 1 && isset($value['item'])) {
+                        // Reemplazar el array con su contenido
+                        $array[$key] = $value['item'];
+                    }
+                    // Verificar si el valor es un array y no está vacío
+                    elseif (is_array($value) && !empty($value)) {
+                        // Realizar una llamada recursiva para transformar el array interno
+                        $array[$key] = transformArray($value);
+                    }
+                }
+
+                return $array;
+            }
+
+            Log::info(print_r($debt, true));
+            // Convertir el objeto stdClass a un objeto SimpleXMLElement
+            $xmlString = json_encode($debt);
+            Log::info(print_r($xmlString, true));
+            $xmlObject = \simplexml_load_string($xmlString);
+
+            Log::info(print_r($xmlObject, true));
+            // Convertir el objeto SimpleXMLElement en un array asociativo
+            $array = xmlToArray($xmlObject);
+            Log::info(print_r($array, true));
+// Realizar la transformación adicional en el array resultante
+            $transformedArray = transformArray($array);
+            Log::info(print_r($transformedArray, true));
+// Convertir el array en JSON
+            $debt = json_encode($transformedArray, JSON_PRETTY_PRINT);
+
+            Log::info(print_r($debt, true));
+            //Log::info(print_r(json_encode($debt, JSON_FORCE_OBJECT), true));
+
             /*$cliente = array( "first_name"=> " Marcos",
                 "last_name"=> "Piñero",
                 "extra"=> []);

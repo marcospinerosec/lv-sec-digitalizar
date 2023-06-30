@@ -10,18 +10,6 @@ class PagosApiController extends Controller
 {
 
 
-    public static function getHttpHeaders(){
-
-        $bearerToken = 'rDoyf7pwG5dmm7JobqCuht7TAAeGiDtX';
-        $headers    =   [
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Authorization' => 'X-API-KEY ' .$bearerToken,
-            ],
-            'http_errors' => false,
-        ];
-        return $headers;
-    }
 
     /**
      * Create a new controller instance.
@@ -33,44 +21,67 @@ class PagosApiController extends Controller
         //$this->middleware('auth');
     }
 
-    public function debt()
+    public static function getHttpHeaders(){
+
+        $apikey = 'rDoyf7pwG5dmm7JobqCuht7TAAeGiDtX';
+        $headers    =   [
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'X-API-KEY' => $apikey,
+            ],
+        ];
+        return $headers;
+    }
+
+
+
+    public function postDebt()
     {
-        $client = new Client();
+
+        $cliente = array( "first_name"=> " Marcos",
+            "last_name"=> "Piñero",
+            "extra"=> []);
+        $body = array("code"=> "666","alternative_code"=> "1", "ccf_code"=> "111222","ccf_client_id"=> "666", "ccf_client_data"=> $cliente,"ccf_extra"=> [], "payment_methods"=> "all", "subdebts"=> [array(
+            "unique_reference"=> "666",
+            "amount"=> 6666.66,
+            "due_date"=> "2023-04-04 00:00:00",
+            "texts"=> [
+                [
+                    "Texts"
+                ]
+            ]
+        )
+        ]
+        );
+
+
         $url = "https://core.sandbox.simp2.com/api/v1/debt";
 
-        $params = [
-            //If you have any Params Pass here
-        ];
-        $api_key='rDoyf7pwG5dmm7JobqCuht7TAAeGiDtX';
-        $headers = [
-            'api-key' => $api_key,
-            'Authorization' => 'X-API-KEY ' .$api_key,
-            'Content-Type' => 'application/json',
-        ];
+        $client = new Client(self::getHttpHeaders());
 
+        $response = $client->post($url, [
 
-
-
-        $client = new Client();
-
-// Prepare Request
-        $request = new Request('POST', $url, [
-
-            'headers' => $headers,
-            'verify'  => false,
+            'body' => json_encode($body),
         ]);
 
-// Send Request
-        $response = $client->send($request, [
-            'body' => 'ABCDEF',
-        ]);
-
-// Read Response
-        $response_body = (string)$response->getBody();
-        var_dump($response_body);
-
+        var_dump($response->getBody()->getContents());
         //return view('projects.apiwithkey', compact('responseBody'));
     }
+
+
+    public function getDebt()
+    {
+
+        $client = new Client(self::getHttpHeaders());
+
+        $url = "https://core.sandbox.simp2.com/api/v1/debt/123";
+
+        $response = $client->get($url);
+        return $response->getBody()->getContents();
+        //return view('projects.apiwithkey', compact('responseBody'));
+    }
+
+
 
 
 }

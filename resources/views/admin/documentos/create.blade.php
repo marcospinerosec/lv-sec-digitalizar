@@ -20,15 +20,14 @@
 
         <div class="form-group">
             <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
-            {{ $empresa[0]->CODIGO }} - <?php echo utf8_encode($empresa[0]->NOMBREREAL) ?>
+            {{ $empresa[0]->CODIGO }} - <?php echo ($empresa[0]->NOMBREREAL) ?>
             <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>">
             <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
             <input type="hidden" name="procesarDetalle"  value="1">
-            <input type="hidden" name="codigoEmpresa"  id="codigoEmpresa" value="<?php echo $empresa[0]->CODIGO?>">
         </div>
 
         <div class="form-group" style="display: flex;">
-            <label for="content"><strong>{{__('ID Documento')}}</strong></label>
+            <label for="content"><strong>{{__('Tipo Documento')}}</strong></label>
             <select class="form-control" name="idDocumento" id="idDocumento" style="width: 300px;">
                 <option value="">{{__('Select')}}...</option>
                 @foreach ($documentos as $documento)
@@ -52,8 +51,7 @@
 
             <input type="file" name="documento" id="fileDocumento" class="form-control-file" id="profile-img" value="">
 
-            <!--<button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>_{{ date('Y_m_d_H_i_s') }}');" class='btn btn-success'>Escanear</button>-->
-            <button type="button" onclick="escanear('<?php echo $empresa[0]->CODIGO?>');" class='btn btn-success'>Escanear</button>
+            <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(utf8_encode($empresa[0]->NOMBREREAL))))?>_{{ date('Y_m_d_H_i_s') }}');" class='btn btn-success'>Escanear</button>
             <span id="hrefDocumento">
 
             </span>
@@ -69,19 +67,6 @@
             <a href="{{route('documentos.doc_upload',array('empresaId'=>$empresa[0]->IDEMPRESA)) }}" class="btn btn-success m-1">Volver</a>
         </div>
     </form>
-<script>
-    function escanear(codigoEmpresa){
-        var $tipoDoc = document.getElementById('idDocumento').value;
-        if ($tipoDoc){
-            scanToLocalDisk(codigoEmpresa+"_"+$tipoDoc+"_"+{{ date('Y_m_d_H_i_s') }});
-        }
-        else{
-            alert('Debe seleccionar el Tipo de Documento');
-        }
 
-
-
-    }
-</script>
 
 @endsection

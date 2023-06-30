@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{{ __('Administración del Sitio') }}</title>
+    <title>{{ __('AdministraciÃ³n del Sitio') }}</title>
 
 
     <!-- Custom fonts for this template-->
@@ -104,7 +104,7 @@
         <footer class="sticky-footer">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright © {{date('Y')}} Todos los derechos reservados.</span>
+                    <span>Copyright Â© {{date('Y')}} Todos los derechos reservados.</span>
                 </div>
             </div>
         </footer>
@@ -127,7 +127,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                    <span aria-hidden="true">Ã—</span>
                 </button>
             </div>
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
@@ -176,7 +176,7 @@
                     {
                         "type": "save",
                         "format": "pdf",
-                        "save_path": "<?php echo str_replace('\\', '/', public_path('../storage/app/public/files/'))?>"+name_file+"${EXT}"
+                        "save_path": "<?php echo str_replace('\\', '/', public_path('../nas/files/'))?>"+name_file+"${EXT}"
                     }
                 ]
             }
@@ -237,49 +237,49 @@
         }
 
         if(scanner.getSaveResponse(response).indexOf("DJSEC")!=-1){
-            document.getElementById('hrefDJSEC').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_DJSEC.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
+            document.getElementById('hrefDJSEC').innerHTML = '<a target="_blank" href="{{ asset('../nas/files/') }}/'+document.getElementById('nombrereal').value+'_DJSEC.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('DJSECEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 1;
             document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("CUIT")!=-1){
-            document.getElementById('hrefCUIT').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_CUIT.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
+            document.getElementById('hrefCUIT').innerHTML = '<a target="_blank" href="{{ asset('../nas/files/') }}/'+document.getElementById('nombrereal').value+'_CUIT.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('CUITEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 2;
             document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("RTAFIP")!=-1){
-            document.getElementById('hrefRTAFIP').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_RTAFIP.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
+            document.getElementById('hrefRTAFIP').innerHTML = '<a target="_blank" href="{{ asset('../nas/files/') }}/'+document.getElementById('nombrereal').value+'_RTAFIP.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('RTAFIPEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 3;
             document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("HABMUN")!=-1){
-            document.getElementById('hrefHABMUN').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_HABMUN.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
+            document.getElementById('hrefHABMUN').innerHTML = '<a target="_blank" href="{{ asset('../nas/files/') }}/'+document.getElementById('nombrereal').value+'_HABMUN.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('HABMUNEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 4;
             document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("JORLAB")!=-1){
-            document.getElementById('hrefJORLAB').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_JORLAB.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
+            document.getElementById('hrefJORLAB').innerHTML = '<a target="_blank" href="{{ asset('../nas/files/') }}/'+document.getElementById('nombrereal').value+'_JORLAB.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('JORLABEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 5;
             document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("DNI")!=-1){
-            document.getElementById('hrefDNI').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_DNI.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
+            document.getElementById('hrefDNI').innerHTML = '<a target="_blank" href="{{ asset('../nas/files/') }}/'+document.getElementById('nombrereal').value+'_DNI.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('DNIEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 6;
             document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("CONTRATO")!=-1){
-            document.getElementById('hrefCONTRATO').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_CONTRATO.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
+            document.getElementById('hrefCONTRATO').innerHTML = '<a target="_blank" href="{{ asset('../nas/files/') }}/'+document.getElementById('nombrereal').value+'_CONTRATO.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('CONTRATOEscaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 7;
             document.getElementById("formDoc").submit();
         }
         if(scanner.getSaveResponse(response).indexOf("F931")!=-1){
-            document.getElementById('hrefF931').innerHTML = '<a target="_blank" href="{{ asset('../storage/app/public/files/') }}/'+document.getElementById('nombrereal').value+'_F931.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
+            document.getElementById('hrefF931').innerHTML = '<a target="_blank" href="{{ asset('../nas/files/') }}/'+document.getElementById('nombrereal').value+'_F931.pdf"><i class="fas fa-file-pdf fa-2x"></i></a>'
             document.getElementById('F931Escaneado').value = scanner.getSaveResponse(response);
             document.getElementById('idDocumento').value = 8;
             document.getElementById("formDoc").submit();

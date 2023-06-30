@@ -12,6 +12,7 @@ use DB;
 use App\Models\User;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class DocumentoController extends Controller
 {
@@ -149,7 +150,7 @@ class DocumentoController extends Controller
 
         ]);*/
 
-
+        $arrayValidation = [];
         /*$arrayValidation = [
             'DJSEC' => 'mimes:pdf|max:4096',
             'CUIT' => 'mimes:pdf|max:4096',
@@ -182,7 +183,8 @@ class DocumentoController extends Controller
             $newFileNameDocumento = $empresa . '_'.date('Y_m_d_H_i_s').'.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
-            $path = $DocumentoF->storeAs('public/files', $newFileNameDocumento);
+            //$path = $DocumentoF->storeAs('public/files', $newFileNameDocumento);
+            $store  = Storage::disk('nas')->put($newFileNameDocumento, File::get($DocumentoF));
 
             // dd($extension);
         }elseif (request('docEscaneado')){
@@ -539,30 +541,30 @@ class DocumentoController extends Controller
 
         try{
 
-                $insertarDocumento=DB::select(DB::raw("exec GEN_ACTUALIZARDocumentos :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10, :Param11, :Param12, :Param13, :Param14, :Param15, :Param16, :Param17, :Param18, :Param19, :Param20, :Param21"),[
-                    ':Param1' => $idEmpresa,
-                    ':Param2' => $idDJSEC,
-                    ':Param3' => $newFileNameDJSEC,
-                    ':Param4' => $idCUIT,
-                    ':Param5' => $newFileNameCUIT,
-                    ':Param6' => $idRTAFIP,
-                    ':Param7' => $newFileNameRTAFIP,
-                    ':Param8' => $idHABMUN,
-                    ':Param9' => $newFileNameHABMUN,
-                    ':Param10' => $idJORLAB,
-                    ':Param11' => $newFileNameJORLAB,
-                    ':Param12' => $idDNI,
-                    ':Param13' => $newFileNameDNI,
-                    ':Param14' => $idCONTRATO,
-                    ':Param15' => $newFileNameCONTRATO,
-                    ':Param16' => $idF931,
-                    ':Param17' => $newFileNameF931,
-                    ':Param18' => $user->id,
-                    ':Param19' => $idDocumento,
-                    ':Param20' => $detalle,
-                    ':Param21' => $newFileNameDocumento,
+            $insertarDocumento=DB::select(DB::raw("exec GEN_ACTUALIZARDocumentos :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10, :Param11, :Param12, :Param13, :Param14, :Param15, :Param16, :Param17, :Param18, :Param19, :Param20, :Param21"),[
+                ':Param1' => $idEmpresa,
+                ':Param2' => $idDJSEC,
+                ':Param3' => $newFileNameDJSEC,
+                ':Param4' => $idCUIT,
+                ':Param5' => $newFileNameCUIT,
+                ':Param6' => $idRTAFIP,
+                ':Param7' => $newFileNameRTAFIP,
+                ':Param8' => $idHABMUN,
+                ':Param9' => $newFileNameHABMUN,
+                ':Param10' => $idJORLAB,
+                ':Param11' => $newFileNameJORLAB,
+                ':Param12' => $idDNI,
+                ':Param13' => $newFileNameDNI,
+                ':Param14' => $idCONTRATO,
+                ':Param15' => $newFileNameCONTRATO,
+                ':Param16' => $idF931,
+                ':Param17' => $newFileNameF931,
+                ':Param18' => $user->id,
+                ':Param19' => $idDocumento,
+                ':Param20' => $detalle,
+                ':Param21' => $newFileNameDocumento,
 
-                ]);
+            ]);
 
 
 
@@ -678,6 +680,7 @@ class DocumentoController extends Controller
 
         ]);
 
+        $idEmpresa = $documento[0]->IDEMPRESA;
         //Log::debug((array) $documento);
 
         $oldImage = base_path().'/nas/files/'. trim($documento[0]->NOMBRE)  ;
@@ -702,6 +705,6 @@ class DocumentoController extends Controller
 
 
 
-        return redirect()->route('documentos.doc_upload', ['empresaId' => $documento[0]->IDEMPRESA])->with('success','Registro eliminado satisfactoriamente');
+        return redirect()->route('documentos.doc_upload', ['empresaId' => $idEmpresa])->with('success','Registro eliminado satisfactoriamente');
     }
 }

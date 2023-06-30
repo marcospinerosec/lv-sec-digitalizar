@@ -1,108 +1,239 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>How to upload a file in Laravel 8</title>
+@extends('admin.layouts.dashboard')
 
-    <!-- Meta -->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
+@section('content')
+    @if (\Session::has('error'))
+        <div class="alert alert-danger">
+            <ul>
+                <li>{!! \Session::get('error') !!}</li>
+            </ul>
+        </div>
+    @endif
+    @if (\Session::has('success'))
+        <div class="alert alert-success">
+            <ul>
+                <li>{!! \Session::get('success') !!}</li>
+            </ul>
+        </div>
+    @endif
+    <!-- if validation in the controller fails, show the errors -->
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    <h1>{{__('Digitalización')}}</h1>
 
-    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="{{ asset('css/upload.css') }}" rel="stylesheet">
-
-    <!-- Scripts -->
-    <script src="{{ asset('js/scanner.js') }}" defer></script>
 
 
 
+    <form id="formDoc" method="POST" action="{{route('documentos.store')}}" enctype="multipart/form-data">
+        @method('PATCH')
+        @csrf()
 
-</head>
-<body>
+        <div class="form-group">
+            <label for="nombre"><strong>{{__('Empresa')}}</strong></label>
+            {{ $empresa[0]->CODIGO }} - <?php echo ($empresa[0]->NOMBREREAL) ?>
+            <input type="hidden" name="nombrereal"  id="nombrereal" value="<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(($empresa[0]->NOMBREREAL))))?>">
+            <input type="hidden" name="idDocumento"  id="idDocumento" value="">
+            <input type="hidden" name="idEmpresa"  value="{{$empresa[0]->IDEMPRESA}}">
+        </div>
+        <hr>
+        @foreach($documentos as $documento)
+            @php
+            $nombreDoc='';
+            $idDoc='';
+            @endphp
+            @foreach($documentosEmpresas as $documentoEmpresa)
 
-<div class="container">
+                    @php
+                    if ($documento->ID==$documentoEmpresa->IDDOCUMENTO){
+                        $nombreDoc=$documentoEmpresa->NOMBRE;
+                        $idDoc=$documentoEmpresa->ID;
+                    }
+                    @endphp
 
-    <div class="row">
+            @endforeach
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="image"><strong><?php echo ($documento->NOMBRE); ?></strong></label>
+            <input type="hidden" name="<?php echo trim($documento->SIGLA);?>Escaneado" id="<?php echo trim($documento->SIGLA);?>Escaneado" value="{{$nombreDoc}}">
+            <input type="hidden" name="<?php echo trim($documento->SIGLA);?>ID" id="<?php echo trim($documento->SIGLA);?>ID" value="{{$idDoc}}">
 
-            <!-- Alert message (start) -->
-            @if(Session::has('message'))
-                <div class="alert {{ Session::get('alert-class') }}">
-                    {{ Session::get('message') }}
-                </div>
-        @endif
-        <!-- Alert message (end) -->
+            <!--<input type="file" name="<?php echo trim($documento->SIGLA);?>" id="file<?php echo trim($documento->SIGLA);?>" class="form-control-file" id="profile-img" value="">
 
-            <form action="{{route('uploadFile')}}" enctype='multipart/form-data' method="post" >
-                {{csrf_field()}}
+                <button type="button" onclick="scanToLocalDisk('<?php echo str_replace(' ','_',str_replace('  ','',quitar_tildes(($empresa[0]->NOMBREREAL))))?>_{{$documento->SIGLA}}');" class='btn btn-success'>Escanear</button>-->
+            <span id="href<?php echo trim($documento->SIGLA);?>">
+                <a href="{{route('documentos.edit',  array('empresaId' => $empresa[0]->IDEMPRESA,'sigla'=>trim($documento->SIGLA),'nombre'=>trim($documento->NOMBRE)))}}"><i class="fas fa-upload fa-2x"></i></a>
 
-                <div class="form-group">
-                <!--<label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">File <span class="required">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
+                 @if($nombreDoc)
+                    <a target="_blank" href="{{ asset('../nas/files/'.$nombreDoc) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
+                    <a href="#" onClick="quitar('<?php echo trim($documento->SIGLA);?>')"><i class="fas fa-trash-alt fa-2x"></i></a>
+                @endif
+            </span>
+        </div>
+        <hr>
+        @endforeach
+        <div id="server_response"></div>
+        <div id="response"></div>
+        <!--<div class="form-group pt-2">
+            <input class="btn btn-primary" type="submit" value="{{__('Submit')}}">
+        </div>-->
+    </form>
+    <div class="row py-lg-2">
 
-                        <input type='file' name='file' class="form-control">
 
-                        @if ($errors->has('file'))
-                            <span class="errormsg text-danger">{{ $errors->first('file') }}</span>
-                        @endif
-                    </div>-->
-                </div>
+        <div class="col-md-6">
+            <a href="{{route('documentos.create',  array('empresaId' => $empresa[0]->IDEMPRESA))}}" class="btn btn-primary float-md-left" role="button" aria-pressed="true">{{__('Nuevo')}}</a>
+        </div>
 
-                <div class="form-group">
-                    <div class="col-md-6">
-                        <!--<input type="submit" name="submit" value='Submit' class='btn btn-success'>-->
-                        <button type="button" onclick="scanAndUploadDirectly();" class='btn btn-success'>Escanear</button>
-                    </div>
-                </div>
-                <div id="server_response"></div>
-            </form>
+    </div>
+    <!-- DataTables Example -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fas fa-table"></i>
+            {{__('Documentos')}}
 
         </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+
+                        <th>{{__('User')}}</th>
+                        <th>{{__('Alta')}}</th>
+                        <th>{{__('Detalle')}}</th>
+                        <th>{{__('Tools')}}</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Id</th>
+
+                        <th>{{__('User')}}</th>
+                        <th>{{__('Alta')}}</th>
+                        <th>{{__('Detalle')}}</th>
+                        <th>{{__('Tools')}}</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    @foreach ($otrosDocumentos as $otroDocumento)
+                        <tr>
+                            <td>{{ $otroDocumento->ID }}</td>
+
+
+
+                            <td><?php echo ($otroDocumento->UsuarioNT); ?></td>
+                            <td>{{($otroDocumento->FECHAALTA)?date('d/m/Y H:i', strtotime($otroDocumento->FECHAALTA)):''}}</td>
+                            <td>{{ $otroDocumento->DETALLE }}</td>
+                            <td>
+                                <div class="d-flex">
+                                @if($otroDocumento->NOMBRE)
+
+                                    <a target="_blank" href="{{ asset('../storage/app/public/files/'.$otroDocumento->NOMBRE ) }}"><i class="fas fa-file-pdf fa-2x"></i></a>
+
+                                @endif
+                                    <form name="formDelete" id="formDelete" action="{{ route('documentos.destroy', array('id' => $otroDocumento->ID)) }}" method="POST" onsubmit="return  ConfirmDelete()">
+                                        @csrf
+                                        @method('delete')
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                                        <!--<button class="btn btn-primary m-1"><i class="fas fa-trash-alt fa"></i></button>-->
+                                        <a href="#" onClick="return  ConfirmDelete();"><i class="fas fa-trash-alt fa-2x"></i></a>
+
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <!--<div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>-->
     </div>
-</div>
-<script>
-    //
-    // Please read scanner.js developer's guide at: http://asprise.com/document-scan-upload-image-browser/ie-chrome-firefox-scanner-docs.html
-    //
+@section('js_documento_page')
 
-    /** Scan and upload in one go */
-    function scanAndUploadDirectly() {
-        scanner.scan(displayServerResponse,
-            {
-                "output_settings": [
-                    {
-                        "type": "upload",
-                        "format": "pdf",
-                        "upload_target": {
-                            "url": "{{ url('/') }}/upload.php?action=dump",
-                            "post_fields": {
-                                "sample-field": "Test scan"
-                            },
-                            "cookies": document.cookie,
-                            "headers": [
-                                "Referer: " + window.location.href,
-                                "User-Agent: " + navigator.userAgent
-                            ]
-                        }
-                    }
-                ]
+    <script>
+
+        function ConfirmDelete()
+        {
+            var x = confirm("Eliminar archivo?");
+            if (x){
+                document.getElementById('formDelete').submit();
+                return true;
             }
-        );
-    }
 
-    function displayServerResponse(successful, mesg, response) {
-        if(!successful) { // On error
-            document.getElementById('server_response').innerHTML = 'Failed: ' + mesg;
-            return;
+            else
+                return false;
         }
 
-        if(successful && mesg != null && mesg.toLowerCase().indexOf('user cancel') >= 0) { // User cancelled.
-            document.getElementById('server_response').innerHTML = 'User cancelled';
-            return;
-        }
+        $(function() {
+            document.getElementById("fileDJSEC").onchange = function() {
+                document.getElementById('idDocumento').value = 1;
+                document.getElementById("formDoc").submit();
+            };
+            document.getElementById("fileCUIT").onchange = function() {
+                document.getElementById('idDocumento').value = 2;
+                document.getElementById("formDoc").submit();
+            };
+            document.getElementById("fileRTAFIP").onchange = function() {
+                document.getElementById('idDocumento').value = 3;
+                document.getElementById("formDoc").submit();
+            };
+            document.getElementById("fileHABMUN").onchange = function() {
+                document.getElementById('idDocumento').value = 4;
+                document.getElementById("formDoc").submit();
+            };
+            document.getElementById("fileJORLAB").onchange = function() {
+                document.getElementById('idDocumento').value = 5;
+                document.getElementById("formDoc").submit();
+            };
+            document.getElementById("fileDNI").onchange = function() {
+                document.getElementById('idDocumento').value = 6;
+                document.getElementById("formDoc").submit();
+            };
+            document.getElementById("fileCONTRATO").onchange = function() {
+                document.getElementById('idDocumento').value = 7;
+                document.getElementById("formDoc").submit();
+            };
+            document.getElementById("fileF931").onchange = function() {
+                document.getElementById('idDocumento').value = 8;
+                document.getElementById("formDoc").submit();
+            };
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
 
-        document.getElementById('server_response').innerHTML = scanner.getUploadResponse(response);
-    }
-</script>
-</body>
-</html>
+                    reader.onload = function (e) {
+                        $('#profile-img-tag').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $("#profile-img").change(function(){
+                readURL(this);
+            });
+
+
+
+        });
+
+
+
+
+    </script>
+
+
+@endsection
+
+@endsection

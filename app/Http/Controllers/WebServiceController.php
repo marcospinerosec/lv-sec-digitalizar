@@ -38,6 +38,63 @@ class WebServiceController extends Controller
         return response()->json(['result' => $results]);
     }
 
+    public function esAdministrador($idUsuario)
+    {
+        $results=DB::select(DB::raw("exec ADM_EsAdministrador :Param1"),[
+            ':Param1' => $idUsuario,
+        ]);
+        //dd($empresas);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
+    public function imprimeBoleta($idUsuario)
+    {
+        $results=DB::select(DB::raw("exec ADM_UsuarioImprimeSoloBoleta :Param1"),[
+            ':Param1' => $idUsuario,
+        ]);
+        //dd($empresas);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
+    public function esActa($idUsuario)
+    {
+        $results=DB::select(DB::raw("exec DDJJ_ActaBoletasTraerPorUsuario :Param1"),[
+            ':Param1' => $idUsuario,
+        ]);
+        //dd($empresas);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
     public function verificaEmpleadosPorDebajoMinimo($empresa, $mes, $year)
     {
         $results = DB::select(DB::raw("exec DDJJ_VerificaEmpleadosPorDebajoMinimo :Param1, :Param2, :Param3"), [
@@ -57,6 +114,8 @@ class WebServiceController extends Controller
 
         return response()->json(['result' => $results]);
     }
+
+
 
     public function empresaPorUsuario($idUsuario)
     {
@@ -190,5 +249,7 @@ class WebServiceController extends Controller
 
         return response()->json(['result' => $results]);
     }
+
+
 
 }

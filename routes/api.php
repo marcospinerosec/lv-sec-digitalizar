@@ -25,6 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::get('/verifica-usuario/{username}/{password}', [WebServiceController::class, 'verificaUsuario']);
+Route::get('/es-administrador/{idUsuario}', [WebServiceController::class, 'esAdministrador']);
+Route::get('/imprime-boleta/{idUsuario}', [WebServiceController::class, 'imprimeBoleta']);
+Route::get('/es-acta/{idUsuario}', [WebServiceController::class, 'esActa']);
 Route::get('/verifica-empleado-debajo-minimo/{empresa}/{mes}/{year}', [WebServiceController::class, 'verificaEmpleadosPorDebajoMinimo']);
 Route::get('/empresa-usuario/{idUsuario}', [WebServiceController::class, 'empresaPorUsuario']);
 Route::get('/empresa/{idEmpresa}', [WebServiceController::class, 'empresaPorId']);

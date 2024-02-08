@@ -36,3 +36,11 @@ Route::get('/valida-dia/{fecha}', [WebServiceController::class, 'validaDia']);
 Route::get('/boleta-pago-impresion/{empresa}/{mes}/{year}', [WebServiceController::class, 'boletaPagoImpresion']);
 Route::get('/numero-mensual/{empresa}/{mes}/{year}', [WebServiceController::class, 'numeroMensual']);
 Route::get('/porcentaje-interes-traer', [WebServiceController::class, 'traerPorcentajeInteres']);
+Route::get('/verifica-boleta/{empresa}/{mes}/{year}', [WebServiceController::class, 'verificaBoletaPago']);
+Route::get('/empleados-empresa-ddjj/{empresa}/{mes}/{year}', [WebServiceController::class, 'empleadosPorEmpresaParaDDJJ']);
+Route::get('/central-pagos/{produccion}', [WebServiceController::class, 'centralPagos']);
+
+Route::put('/guardar-ddjj/{empresa}/{mes}/{year}/{intereses}/{numero}/{interesesPFT}/{vencimiento}/{vencimientoOriginal}/{mp}/{idUsuario}', [WebServiceController::class, 'guardarDDJJ']);
+Route::put('/guardar-ddjj-comprobante/{empresa}/{mes}/{year}/{numero}', [WebServiceController::class, 'guardarDDJJComprobante']);
+
+

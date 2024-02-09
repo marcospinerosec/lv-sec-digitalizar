@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Database\QueryException;
 
 
 class WebServiceController extends Controller
@@ -292,24 +293,62 @@ class WebServiceController extends Controller
 
     public function guardarDDJJ($empresa, $mes, $year,$intereses,$numero,$interesesPFT,$vencimiento,$vencimientoOriginal,$mp,$idUsuario)
     {
+        $vencimiento = date('Y-m-d', strtotime($vencimiento));
+        $vencimientoOriginal = date('Y-m-d', strtotime($vencimientoOriginal));
+        $empresa = intval($empresa);
+        $mes = intval($mes);
+        $year = intval($year);
+        $numero = intval($numero);
+
+        $idUsuario = intval($idUsuario);
 
 
-        $results = DB::select(DB::raw("exec DDJJ_GuardarDDJJ :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10"), [
-             ':Param1' => $empresa,
-             ':Param2' => $mes,
-             ':Param3' => $year,
-            ':Param4' => $intereses,
-            ':Param5' => $numero,
-            ':Param6' => $interesesPFT,
-            ':Param7' => $vencimiento,
-            ':Param8' => $vencimientoOriginal,
-            ':Param9' => $mp,
-            ':Param10' => $idUsuario
-        ]);
+        try {
+            $results = DB::select(DB::raw("exec DDJJ_GuardarDDJJ :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10"), [
+                ':Param1' => $empresa,
+                ':Param2' => $mes,
+                ':Param3' => $year,
+                ':Param4' => $intereses,
+                ':Param5' => $numero,
+                ':Param6' => $interesesPFT,
+                ':Param7' => $vencimiento,
+                ':Param8' => $vencimientoOriginal,
+                ':Param9' => '',
+                ':Param10' => $idUsuario
+            ]);
 
-        // Tu lógica de actualización aquí
+            // Tu lógica de actualización aquí
 
-        return response()->json(['message' => 'Datos actualizados con éxito']);
+            return response()->json(['message' => 'Datos actualizados con éxito']);
+        } catch (QueryException $e) {
+            // Aquí manejas la excepción
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+
+            // Obtén los parámetros utilizados en la llamada al procedimiento almacenado
+            $parametros = [
+                'empresa' => $empresa,
+                'mes' => $mes,
+                'year' => $year,
+                'intereses' => $intereses,
+                'numero' => $numero,
+                'interesesPFT' => $interesesPFT,
+                'vencimiento' => $vencimiento,
+                'vencimientoOriginal' => $vencimientoOriginal,
+                'mp' => $mp,
+                'idUsuario' => $idUsuario,
+            ];
+
+            // Log de la excepción o cualquier otro manejo que necesites
+
+            \Log::error("Error al ejecutar el procedimiento almacenado en " . now() . ": $errorMessage (Code: $errorCode). Parámetros: " . print_r($parametros, true));
+
+
+            // Devuelve una respuesta indicando que ha ocurrido un error
+            return response()->json(['error' => 'Ha ocurrido un error al procesar la solicitud'], 500);
+        }
+
+
     }
 
     public function guardarDDJJComprobante($empresa, $mes, $year,$numero)

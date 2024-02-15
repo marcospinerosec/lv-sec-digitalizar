@@ -58,9 +58,20 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
-        'nas' => [
+        'cpagos' => [
             'driver' => 'local',
-            'root'   => '../nas/files',
+            'root'   => '../cpagos',
+        ],
+        'sftp' => [
+            'driver' => 'sftp',
+            'host' => '44.205.205.254',
+            'username' => 'sec-laplata',
+            'password' => 'hEtmHNJgUW1h0zi8zwm+L6nOt5vhfb3S',
+            // O usa 'privateKey' en lugar de 'password' si autenticas con clave privada
+            // 'privateKey' => '/ruta/a/clave_privada.pem',
+            'root' => '/incoming',
+            // 'port' => 22, // Puerto SFTP por defecto
+            // 'timeout' => 30, // Tiempo de espera (opcional)
         ],
 
     ],
@@ -79,5 +90,8 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
+
+
+
 
 ];

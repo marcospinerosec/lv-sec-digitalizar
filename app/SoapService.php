@@ -5,9 +5,12 @@ namespace App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Response as LaravelResponse;
 use Illuminate\Support\Facades\View;
+use App\Http\Controllers\PagoController;
+
 
 class SoapService
 {
@@ -26,7 +29,43 @@ class SoapService
         return $headers;
     }
 
+    public function copyAll($token)
+    {
+        if ($token === self::CLIENT_TOKEN) {
+            try {
+                // Llama a la función copyAll directamente desde el controlador
+                $controller = new PagoController();
+                $response = $controller->copyAll();
 
+                // Puedes manejar la respuesta del controlador aquí si es necesario
+                return $response;
+            } catch (\Exception $e) {
+                // Maneja excepciones si ocurren
+                return 'Error: ' . $e->getMessage();
+            }
+        } else {
+            return 'Invalid token';
+        }
+    }
+
+    public function moveAll($token)
+    {
+        if ($token === self::CLIENT_TOKEN) {
+            try {
+                // Llama a la función moveAll directamente desde el controlador
+                $controller = new PagoController();
+                $response = $controller->moveAll();
+
+                // Puedes manejar la respuesta del controlador aquí si es necesario
+                return $response;
+            } catch (\Exception $e) {
+                // Maneja excepciones si ocurren
+                return 'Error: ' . $e->getMessage();
+            }
+        } else {
+            return 'Invalid token';
+        }
+    }
 
     public function hello($name)
     {
@@ -75,47 +114,82 @@ class SoapService
         if ($token === self::CLIENT_TOKEN) {
             // Realizar las operaciones o acciones requeridas
 
-            function transformArray($array) {
-                // Recorrer el array y realizar la transformación deseada
-                foreach ($array as $key => $value) {
-                    // Verificar si el valor es un array y tiene una única clave llamada "item"
-                    if (is_array($value) && count($value) === 1 && isset($value['item'])) {
-                        // Reemplazar el array con su contenido
-                        $array[$key] = $value['item'];
-                    }
-                    // Verificar si el valor es un array y no está vacío
-                    elseif (is_array($value) && !empty($value)) {
-                        // Realizar una llamada recursiva para transformar el array interno
-                        $array[$key] = transformArray($value);
+            function convertStdClassToArray($stdClassObject) {
+                $array = [];
+                foreach ($stdClassObject as $key => $value) {
+                    if (is_object($value)) {
+                        $array[$key] = convertStdClassToArray($value);
+                    } elseif (is_array($value)) {
+                        $array[$key] = convertArray($value);
+                    } elseif ($value !== '') {
+                        $array[$key] = $value;
                     }
                 }
-
                 return $array;
             }
 
-            Log::info(print_r($debt, true));
-            // Convertir el objeto stdClass a un objeto SimpleXMLElement
-            $xmlString = json_encode($debt);
-            Log::info(print_r($xmlString, true));
-            $xmlObject = \simplexml_load_string($xmlString);
+            function convertArray($array) {
+                $newArray = [];
+                foreach ($array as $item) {
+                    if (is_object($item)) {
+                        $newArray[] = convertStdClassToArray($item);
+                    } elseif (is_array($item)) {
+                        $newArray[] = convertArray($item);
+                    } elseif ($item !== '') {
+                        $newArray[] = $item;
+                    }
+                }
+                return $newArray;
+            }
 
-            Log::info(print_r($xmlObject, true));
-            // Convertir el objeto SimpleXMLElement en un array asociativo
-            $array = xmlToArray($xmlObject);
-            Log::info(print_r($array, true));
-// Realizar la transformación adicional en el array resultante
-            $transformedArray = transformArray($array);
-            Log::info(print_r($transformedArray, true));
+            //Log::info(print_r($debt, true));
+
+// Convertir el objeto stdClass a un array asociativo
+            $debt = convertStdClassToArray($debt);
+//$result = convertArray([$array]);
+
+// Función para reemplazar "item" por números en los índices dentro de la subclave 'item'
+            function replaceItemKeysWithNumbersInSubArray($array) {
+                if (!is_array($array)) {
+                    return $array;
+                }
+
+                $newArray = array();
+                foreach ($array as $key => $value) {
+                    if ($key === 'item') {
+                        if (is_array($value)) {
+                            $newSubArray = array();
+                            foreach ($value as $itemValue) {
+                                $newSubArray[] = replaceItemKeysWithNumbersInSubArray($itemValue);
+                            }
+                            $newArray[] = $newSubArray;
+                        }
+                    } else {
+                        $newArray[$key] = is_array($value) ? replaceItemKeysWithNumbersInSubArray($value) : $value;
+                    }
+                }
+
+                return $newArray;
+            }
+
+// Aplicar la función solo en la subclave 'item' de 'subdebts'
+            $debt['subdebts']['item'] = replaceItemKeysWithNumbersInSubArray($debt['subdebts']['item']);
+
+// Reemplazar el índice 'item' en 'subdebts'
+            $debt['subdebts'] = array($debt['subdebts']['item']);
+
+
 // Convertir el array en JSON
-            $debt = json_encode($transformedArray, JSON_PRETTY_PRINT);
+            //$debt = json_encode($result, JSON_PRETTY_PRINT);
 
             Log::info(print_r($debt, true));
+
             //Log::info(print_r(json_encode($debt, JSON_FORCE_OBJECT), true));
 
             /*$cliente = array( "first_name"=> " Marcos",
                 "last_name"=> "Piñero",
                 "extra"=> []);
-            $body = array("code"=> "666","alternative_code"=> "1", "ccf_code"=> "111222","ccf_client_id"=> "666", "ccf_client_data"=> $cliente,"ccf_extra"=> [], "payment_methods"=> "all", "subdebts"=> [array(
+            $debt = array("code"=> "666","alternative_code"=> "1", "ccf_code"=> "111222","ccf_client_id"=> "666", "ccf_client_data"=> $cliente,"ccf_extra"=> [], "payment_methods"=> "all", "subdebts"=> [array(
                 "unique_reference"=> "666",
                 "amount"=> 6666.66,
                 "due_date"=> "2023-04-04 00:00:00",
@@ -126,27 +200,51 @@ class SoapService
                 ]
             )
             ]
-            );*/
+            );
 
-
+            Log::info(print_r($debt, true));*/
 
             $url = self::URL;
 
-            $client = new Client(self::getHttpHeaders());
-
-            $response = $client->post($url, [
-
-                'body' => json_encode($debt),
-            ]);
-
-            //var_dump($response->getBody()->getContents());
 
 
+            try {
+                $client = new Client(self::getHttpHeaders());
+
+                $response = $client->post($url, [
+
+                    'body' => json_encode($debt),
+                ]);
+
+
+                // Manejar la respuesta si es exitosa
+                $body = $response->getBody()->getContents();
+            } catch (ClientException $e) {
+                if ($e->hasResponse()) {
+                    $response = $e->getResponse();
+                    $statusCode = $response->getStatusCode();
+
+                    if ($statusCode == 422) {
+                        // Manejar el error 422 Unprocessable Entity
+                        $body = $response->getBody()->getContents();
+                        // Puedes analizar y trabajar con el contenido de la respuesta
+                        // ...
+                    } else {
+                        // Manejar otros códigos de error
+                        // ...
+                    }
+                }
+            } catch (Exception $e) {
+                // Manejar otras excepciones
+                // ...
+            }
 
 
 
 
-            return $response->getBody()->getContents();
+
+
+            return $body;
 
 
             //return 'Success';

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 
 class WebServiceController extends Controller
@@ -304,7 +305,8 @@ class WebServiceController extends Controller
 
 
         try {
-            $results = DB::select(DB::raw("exec DDJJ_GuardarDDJJ :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10"), [
+            DB::enableQueryLog();
+            /*$results = DB::select(DB::raw("exec DDJJ_GuardarDDJJ :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10"), [
                 ':Param1' => $empresa,
                 ':Param2' => $mes,
                 ':Param3' => $year,
@@ -315,6 +317,19 @@ class WebServiceController extends Controller
                 ':Param8' => $vencimientoOriginal,
                 ':Param9' => '',
                 ':Param10' => $idUsuario
+            ]);*/
+
+            DB::statement("exec DDJJ_GuardarDDJJ ?, ?, ?, ?, ?, ?, ?, ?, ?, ?", [
+                $empresa,
+                $mes,
+                $year,
+                $intereses,
+                $numero,
+                $interesesPFT,
+                $vencimiento,
+                $vencimientoOriginal,
+                null,
+                $idUsuario
             ]);
 
             // Tu lógica de actualización aquí
@@ -343,6 +358,7 @@ class WebServiceController extends Controller
 
             \Log::error("Error al ejecutar el procedimiento almacenado en " . now() . ": $errorMessage (Code: $errorCode). Parámetros: " . print_r($parametros, true));
 
+            Log::debug('SQL Queries: '.json_encode(DB::getQueryLog()));
 
             // Devuelve una respuesta indicando que ha ocurrido un error
             return response()->json(['error' => 'Ha ocurrido un error al procesar la solicitud'], 500);

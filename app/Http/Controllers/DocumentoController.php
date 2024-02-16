@@ -72,17 +72,17 @@ class DocumentoController extends Controller
 
         //$documentos=DB::select(DB::raw("exec GEN_TraerDocumentosObligatorios"));
 
-        $otrosDocumentos=DB::select(DB::raw("exec GEN_TraerEmpresaOtrosDocumentosPorIdEmpresa :Param1"),[
+        /*$otrosDocumentos=DB::select(DB::raw("exec GEN_TraerEmpresaOtrosDocumentosPorIdEmpresa :Param1"),[
             ':Param1' => $empresa_id,
 
-        ]);
+        ]);*/
 
         $documentosEmpresas=DB::select(DB::raw("exec GEN_TraerEmpresaDocumentosPorIdEmpresa :Param1"),[
             ':Param1' => $empresa_id,
 
         ]);
         //print_r($documento);
-        return view('admin.documentos.doc_upload', ['otrosDocumentos' => $otrosDocumentos,'documentosEmpresas' => $documentosEmpresas, 'empresa' => $empresa]);
+        return view('admin.documentos.doc_upload', ['documentosEmpresas' => $documentosEmpresas, 'empresa' => $empresa]);
     }
 
 
@@ -156,22 +156,31 @@ class DocumentoController extends Controller
 
         $arrayValidation = [];
 
-        /*$arrayValidation = [
-            'DJSEC' => 'mimes:pdf|max:4096',
-            'CUIT' => 'mimes:pdf|max:4096',
-            'RTAFIP' => 'mimes:pdf|max:4096',
-            'HABMUN' => 'mimes:pdf|max:4096',
-            'JORLAB' => 'mimes:pdf|max:4096',
-            'DNI' => 'mimes:pdf|max:4096',
-            'CONTRATO' => 'mimes:pdf|max:4096',
-            'F931' => 'mimes:pdf|max:4096',
-            'documento' => 'mimes:pdf|max:4096'
-        ];*/
+
 
         $empresa = request('nombrereal');
 
         $idEmpresa = request('idEmpresa');
 
+        $codigoEmpresa = request('codigoEmpresa');
+        $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
+
+
+
+        $detalle = (request('Detalle'))?request('Detalle'):null;
+        if (request('procesarDetalle')){
+            $arrayValidation['idDocumento'] = 'required';
+            $arrayValidation['documento'] = 'required|mimes:jpg,jpeg,pdf|max:2048';
+            if ( !in_array($idDocumento, array('1','2','3','4'), true ) ) {
+                $arrayValidation['Detalle'] = 'required';
+            }
+
+        }
+
+
+        //Log::debug((array) $arrayValidation);
+        // Validation
+        $request->validate($arrayValidation);
 
 
         $newFileNameDocumento=null;
@@ -188,7 +197,9 @@ class DocumentoController extends Controller
             $extension = $DocumentoF->getClientOriginalExtension();
 
             //create a new name for the file using the timestamp
-            $newFileNameDocumento = $empresa . '_'.date('Y_m_d_H_i_s').'.' . $extension;
+            //$newFileNameDocumento = $empresa . '_'.date('Y_m_d_H_i_s').'.' . $extension;
+
+            $newFileNameDocumento = $codigoEmpresa.'_'.$idDocumento . '_'.date('Y_m_d_H_i_s').'.' . $extension;
 
             //save the iamge onto a public directory into a separately folder
             //$path = $DocumentoF->storeAs('public/files', $newFileNameDocumento);
@@ -199,379 +210,31 @@ class DocumentoController extends Controller
             $pos      = strripos(request('docEscaneado'), '/');
             $newFileNameDocumento = str_replace('"]', '', substr(request('docEscaneado'), $pos));
         }
-        $idDocumento = (request('idDocumento'))?request('idDocumento'):null;
-        $detalle = (request('Detalle'))?request('Detalle'):null;
-        if (request('procesarDetalle')){
-            $arrayValidation['idDocumento'] = 'required';
-            $arrayValidation['documento'] = 'required';
-            $arrayValidation['Detalle'] = 'required';
-        }
+        //$idDocumento = (request('idDocumento'))?request('idDocumento'):null;
 
-        //Log::debug((array) $arrayValidation);
-        if (request('DJSECVALIDAR')){
-            $arrayValidation['DJSEC'] = 'mimes:pdf|max:4096|required';
 
-        }
-        if (request('CUITVALIDAR')){
-            $arrayValidation['CUIT'] = 'required';
 
-        }
-        if (request('RTAFIPVALIDAR')){
-            $arrayValidation['RTAFIP'] = 'required';
 
-        }
-        if (request('HABMUNVALIDAR')){
-            $arrayValidation['HABMUN'] = 'required';
-
-        }
-        if (request('HABMUNVALIDAR')){
-            $arrayValidation['HABMUN'] = 'required';
-
-        }
-        if (request('JORLABVALIDAR')){
-            $arrayValidation['JORLAB'] = 'required';
-
-        }
-        if (request('DNIVALIDAR')){
-            $arrayValidation['DNI'] = 'required';
-
-        }
-        if (request('CONTRATOVALIDAR')){
-            $arrayValidation['CONTRATO'] = 'required';
-
-        }
-        if (request('F931VALIDAR')){
-            $arrayValidation['F931'] = 'required';
-
-        }
-        //Log::debug((array) $arrayValidation);
-        // Validation
-        $request->validate($arrayValidation);
-
-
-        $newFileNameDJSEC=null;
-        if (request('DJSEC')){
-            //get the image from the form
-            $DJSECF=$request->file('DJSEC');
-            $fileNameWithTheExtension = $DJSECF->getClientOriginalName();
-
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $DJSECF->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameDJSEC = $empresa . '_DJSEC.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            //$path = $DJSECF->storeAs('public/files', $newFileNameDJSEC);
-            $store  = Storage::disk('nas')->put($newFileNameDJSEC, File::get($DJSECF));
-
-            /*$path = base_path() . '/nas/files/';
-            $DJSECF->move($path, $newFileNameDJSEC);*/
-
-            // dd($extension);
-        }
-        elseif (request('DJSECEscaneado')){
-            $pos      = strripos(request('DJSECEscaneado'), '/');
-            $newFileNameDJSEC = str_replace('"]', '', substr(request('DJSECEscaneado'), $pos));
-        }
-        $newFileNameCUIT=null;
-        if (request('CUIT')){
-            //get the image from the form
-            $CUITF=$request->file('CUIT');
-            $fileNameWithTheExtension = $CUITF->getClientOriginalName();
-
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $CUITF->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameCUIT = $empresa . '_CUIT.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            //$path = $CUITF->storeAs('public/files', $newFileNameCUIT);
-
-            $store  = Storage::disk('nas')->put($newFileNameCUIT, File::get($CUITF));
-
-            // dd($extension);
-        }
-        elseif (request('CUITEscaneado')){
-            $pos      = strripos(request('CUITEscaneado'), '/');
-            $newFileNameCUIT = str_replace('"]', '', substr(request('CUITEscaneado'), $pos));
-        }
-        $newFileNameRTAFIP=null;
-        if (request('RTAFIP')){
-            //get the image from the form
-            $RTAFIPF=$request->file('RTAFIP');
-            $fileNameWithTheExtension = $RTAFIPF->getClientOriginalName();
-
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $RTAFIPF->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameRTAFIP = $empresa . '_RTAFIP.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            //$path = $RTAFIPF->storeAs('public/files', $newFileNameRTAFIP);
-
-            $store  = Storage::disk('nas')->put($newFileNameRTAFIP, File::get($RTAFIPF));
-
-            // dd($extension);
-        }
-        elseif (request('RTAFIPEscaneado')){
-            $pos      = strripos(request('RTAFIPEscaneado'), '/');
-            $newFileNameRTAFIP = str_replace('"]', '', substr(request('RTAFIPEscaneado'), $pos));
-        }
-        $newFileNameHABMUN=null;
-        if (request('HABMUN')){
-            //get the image from the form
-            $HABMUNF=$request->file('HABMUN');
-            $fileNameWithTheExtension = $HABMUNF->getClientOriginalName();
-
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $HABMUNF->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameHABMUN = $empresa . '_HABMUN.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            $path = $HABMUNF->storeAs('public/files', $newFileNameHABMUN);
-
-            // dd($extension);
-        }elseif (request('HABMUNEscaneado')){
-            $pos      = strripos(request('HABMUNEscaneado'), '/');
-            $newFileNameHABMUN = str_replace('"]', '', substr(request('HABMUNEscaneado'), $pos));
-        }
-        $newFileNameJORLAB=null;
-        if (request('JORLAB')){
-            //get the image from the form
-            $JORLABF=$request->file('JORLAB');
-            $fileNameWithTheExtension = $JORLABF->getClientOriginalName();
-
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $JORLABF->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameJORLAB = $empresa . '_JORLAB.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            //$path = $JORLABF->storeAs('public/files', $newFileNameJORLAB);
-
-            $store  = Storage::disk('nas')->put($newFileNameJORLAB, File::get($JORLABF));
-
-            // dd($extension);
-        }elseif (request('JORLABEscaneado')){
-            $pos      = strripos(request('JORLABEscaneado'), '/');
-            $newFileNameJORLAB = str_replace('"]', '', substr(request('JORLABEscaneado'), $pos));
-        }
-        $newFileNameDNI=null;
-        if (request('DNI')){
-            //get the image from the form
-            $DNIF=$request->file('DNI');
-            $fileNameWithTheExtension = $DNIF->getClientOriginalName();
-
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $DNIF->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameDNI = $empresa . '_DNI.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            //$path = $DNIF->storeAs('public/files', $newFileNameDNI);
-
-            $store  = Storage::disk('nas')->put($newFileNameDNI, File::get($DNIF));
-
-            // dd($extension);
-        }elseif (request('DNIEscaneado')){
-            $pos      = strripos(request('DNIEscaneado'), '/');
-            $newFileNameDNI = str_replace('"]', '', substr(request('DNIEscaneado'), $pos));
-        }
-        $newFileNameCONTRATO=null;
-        if (request('CONTRATO')){
-            //get the image from the form
-            $CONTRATOF=$request->file('CONTRATO');
-            $fileNameWithTheExtension = $CONTRATOF->getClientOriginalName();
-
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $CONTRATOF->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameCONTRATO = $empresa . '_CONTRATO.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            //$path = $CONTRATOF->storeAs('public/files', $newFileNameCONTRATO);
-
-            $store  = Storage::disk('nas')->put($newFileNameCONTRATO, File::get($CONTRATOF));
-
-            // dd($extension);
-        }elseif (request('CONTRATOEscaneado')){
-            $pos      = strripos(request('CONTRATOEscaneado'), '/');
-            $newFileNameCONTRATO = str_replace('"]', '', substr(request('CONTRATOEscaneado'), $pos));
-        }
-        $newFileNameF931=null;
-        if (request('F931')){
-            //get the image from the form
-            $F931F=$request->file('F931');
-            $fileNameWithTheExtension = $F931F->getClientOriginalName();
-
-            //get the name of the file
-            $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-
-            //get extension of the file
-            $extension = $F931F->getClientOriginalExtension();
-
-            //create a new name for the file using the timestamp
-            $newFileNameF931 = $empresa . '_F931.' . $extension;
-
-            //save the iamge onto a public directory into a separately folder
-            //$path = $F931F->storeAs('public/files', $newFileNameF931);
-
-            $store  = Storage::disk('nas')->put($newFileNameF931, File::get($F931F));
-
-            // dd($extension);
-        }elseif (request('F931Escaneado')){
-            $pos      = strripos(request('F931Escaneado'), '/');
-            $newFileNameF931 = str_replace('"]', '', substr(request('F931Escaneado'), $pos));
-        }
-        if (request('procesarDetalle')){
-
-        }
-        else{
-            if (!$newFileNameDJSEC){
-                $oldImage = base_path().'/nas/files/'. $empresa . '_DJSEC.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-            if (!$newFileNameCUIT){
-                $oldImage = base_path().'/nas/files/'. $empresa . '_CUIT.pdf';
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-            }
-            if (!$newFileNameRTAFIP){
-                $oldImage = base_path().'/nas/files/'. $empresa . '_RTAFIP.pdf';
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-            }
-            if (!$newFileNameHABMUN){
-                $oldImage = base_path().'/nas/files/'. $empresa . '_HABMUN.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-            if (!$newFileNameJORLAB){
-                $oldImage = base_path().'/nas/files/'. $empresa . '_JORLAB.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-            if (!$newFileNameDNI){
-                $oldImage = base_path().'/nas/files/'. $empresa . '_DNI.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-            if (!$newFileNameCONTRATO){
-                $oldImage = base_path().'/nas/files/'. $empresa . '_CONTRATO.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-            if (!$newFileNameF931){
-                $oldImage = base_path().'/nas/files/'. $empresa . '_F931.pdf' ;
-
-                if(file_exists($oldImage)){
-                    //delete the image
-                    unlink($oldImage);
-                }
-
-
-            }
-        }
 
         $user = $request->session()->get('user');
 
-        $idDJSEC = (request('DJSECID'))?request('DJSECID'):null;
-        $idCUIT = (request('CUITID'))?request('CUITID'):null;
-        $idRTAFIP = (request('RTAFIPID'))?request('RTAFIPID'):null;
-        $idHABMUN = (request('HABMUNID'))?request('HABMUNID'):null;
-        $idJORLAB = (request('JORLABID'))?request('JORLABID'):null;
-        $idDNI = (request('DNIID'))?request('DNIID'):null;
-        $idCONTRATO = (request('CONTRATOID'))?request('CONTRATOID'):null;
-        $idF931 = (request('F931ID'))?request('F931ID'):null;
 
+
+
+        Log::debug('idEmpresa: '.$idEmpresa);
+        Log::debug('user: '.$user->id);
+        Log::debug('idDocumento: '.$idDocumento);
+        Log::debug('detalle: '.$detalle);
+        Log::debug('newFileNameDocumento: '.$newFileNameDocumento);
 
         try{
 
-            $insertarDocumento=DB::select(DB::raw("exec GEN_ACTUALIZARDocumentos :Param1, :Param2, :Param3, :Param4, :Param5, :Param6, :Param7, :Param8, :Param9, :Param10, :Param11, :Param12, :Param13, :Param14, :Param15, :Param16, :Param17, :Param18, :Param19, :Param20, :Param21"),[
+            $insertarDocumento=DB::select(DB::raw("exec GEN_ACTUALIZARDocumento :Param1, :Param2, :Param3, :Param4, :Param5"),[
                 ':Param1' => $idEmpresa,
-                ':Param2' => $idDJSEC,
-                ':Param3' => $newFileNameDJSEC,
-                ':Param4' => $idCUIT,
-                ':Param5' => $newFileNameCUIT,
-                ':Param6' => $idRTAFIP,
-                ':Param7' => $newFileNameRTAFIP,
-                ':Param8' => $idHABMUN,
-                ':Param9' => $newFileNameHABMUN,
-                ':Param10' => $idJORLAB,
-                ':Param11' => $newFileNameJORLAB,
-                ':Param12' => $idDNI,
-                ':Param13' => $newFileNameDNI,
-                ':Param14' => $idCONTRATO,
-                ':Param15' => $newFileNameCONTRATO,
-                ':Param16' => $idF931,
-                ':Param17' => $newFileNameF931,
-                ':Param18' => $user->id,
-                ':Param19' => $idDocumento,
-                ':Param20' => $detalle,
-                ':Param21' => $newFileNameDocumento,
+                ':Param2' => $user->id,
+                ':Param3' => $idDocumento,
+                ':Param4' => $detalle,
+                ':Param5' => $newFileNameDocumento,
 
             ]);
 
@@ -690,7 +353,7 @@ class DocumentoController extends Controller
         ]);
 
         $idEmpresa = $documento[0]->IDEMPRESA;
-        //Log::debug((array) $documento);
+        Log::debug((array) $documento);
 
         $oldImage = base_path().'/nas/files/'. trim($documento[0]->NOMBRE)  ;
 

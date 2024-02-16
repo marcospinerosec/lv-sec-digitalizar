@@ -25,7 +25,7 @@
             </ul>
         </div>
     @endif
-    <h1>{{__('Digitalización')}}</h1>
+    <h1>{{__('DigitalizaciÃ³n')}}</h1>
 
 
 
@@ -52,7 +52,7 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
-                        <th>Id</th>
+                        <!--<th>Id</th>-->
                         <th>{{__('Tipo Documento')}}</th>
                         <th>{{__('Detalle')}}</th>
                         <th>{{__('Alta')}}</th>
@@ -62,7 +62,7 @@
                     </thead>
                     <tfoot>
                     <tr>
-                        <th>Id</th>
+                        <!--<th>Id</th>-->
                         <th>{{__('Tipo Documento')}}</th>
                         <th>{{__('Detalle')}}</th>
                         <th>{{__('Alta')}}</th>
@@ -75,7 +75,7 @@
                     <tbody>
                     @foreach ($documentosEmpresas as $documentoEmpresa)
                         <tr>
-                            <td>{{ $documentoEmpresa->ID }}</td>
+                            <!--<td>{{ $documentoEmpresa->ID }}</td>-->
                             <td>{{ $documentoEmpresa->TIPODOCUMENTO }}</td>
                             <td>{{ $documentoEmpresa->DETALLE }}</td>
                             <td>{{($documentoEmpresa->FECHAALTA)?date('d/m/Y H:i', strtotime($documentoEmpresa->FECHAALTA)):''}}</td>
@@ -113,49 +113,49 @@
 
         <!--<div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>-->
     </div>
-@section('js_documento_page')
+    @section('js_documento_page')
 
-    <script>
+        <script>
 
-        function ConfirmDelete(id)
-        {
-            var x = confirm("Eliminar archivo?");
-            if (x){
-                document.getElementById('formDelete'+id).submit();
-                return true;
-            }
-
-            else
-                return false;
-        }
-
-        $(function() {
-
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        $('#profile-img-tag').attr('src', e.target.result);
-                    }
-                    reader.readAsDataURL(input.files[0]);
+            function ConfirmDelete(id)
+            {
+                var x = confirm("Eliminar archivo?");
+                if (x){
+                    document.getElementById('formDelete'+id).submit();
+                    return true;
                 }
+
+                else
+                    return false;
             }
 
-            $("#profile-img").change(function(){
-                readURL(this);
+            $(function() {
+
+                function readURL(input) {
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            $('#profile-img-tag').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
+
+                $("#profile-img").change(function(){
+                    readURL(this);
+                });
+
+
+
             });
 
 
 
-        });
+
+        </script>
 
 
-
-
-    </script>
-
-
-@endsection
+    @endsection
 
 @endsection

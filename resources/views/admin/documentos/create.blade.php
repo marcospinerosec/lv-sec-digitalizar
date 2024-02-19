@@ -3,7 +3,6 @@
 @section('content')
 
     <h1>{{__('Nuevo Documento')}}</h1>
-
     @if ($errors->any())
         <div class="alert alert-danger" role="alert">
             <ul>

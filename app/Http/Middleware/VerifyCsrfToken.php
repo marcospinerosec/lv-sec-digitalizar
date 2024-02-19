@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
 
     protected $except = [
         '/soap', // Ruta del servicio SOAP
+        'store', // Agrega la ruta de almacenamiento aquí
     ];
 
 

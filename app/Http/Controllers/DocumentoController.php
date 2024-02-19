@@ -27,6 +27,7 @@ class DocumentoController extends Controller
     public function __construct()
     {
         //$this->middleware('auth');
+        $this->middleware('web');
     }
 
     public function noSession()
@@ -181,6 +182,11 @@ class DocumentoController extends Controller
         //Log::debug((array) $arrayValidation);
         // Validation
         $request->validate($arrayValidation);
+        //Log::debug('Llegué a la validación');
+        //dd($request->all());
+
+        //dd(session()->all());
+        //Log::debug('Pasé la validación');
 
 
         $newFileNameDocumento=null;

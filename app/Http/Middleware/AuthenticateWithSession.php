@@ -35,7 +35,7 @@ class AuthenticateWithSession
      */
     public function handle($request, Closure $next)
     {
-
+        //dd($request);
         $userID='';
         foreach ($request as $v){
             //print_r($v);
@@ -65,7 +65,10 @@ class AuthenticateWithSession
         if (!empty(session('authenticated'))) {
             //Log::debug('logueado');
             $request->session()->put('authenticated', time());
-            return $next($request);
+
+
+            $response = $next($request);
+            return $response;
         }
 
         return redirect('no_session');

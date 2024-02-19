@@ -92,8 +92,8 @@ return [
         ],
         'odbc-connection-name' => [
             'driver' => 'odbc',
-            'dsn' => 'Driver={SQL Server};Server=192.168.1.116;Database=SECWeb;Integrated Security=SSPI;Persist Security Info=False;',
-            'database' => 'SECWeb',
+            'dsn' => 'Driver={SQL Server};Server=192.168.1.116;Database=SAI;Integrated Security=SSPI;Persist Security Info=False;',
+            'database' => 'SAI',
             'host' => '192.168.1.116',
             'username' => 'sa',
             'password' => 'sailogin'

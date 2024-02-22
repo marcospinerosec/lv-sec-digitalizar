@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Soap;
-use Illuminate\Support\Facades\Storage;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -52,8 +52,7 @@ Route::group(['middleware' => ['web', 'AuthenticateWithSession']], function () {
 
         return view('pagos', ['files' => $files]);
     });
-    Route::get('copyAll', 'App\Http\Controllers\PagoController@copyAll')->name('pago.copyAll');
-    Route::get('moveAll', 'App\Http\Controllers\PagoController@moveAll')->name('pago.moveAll');
+
 
 
 });
@@ -61,8 +60,8 @@ Route::group(['middleware' => ['web', 'AuthenticateWithSession']], function () {
 Route::get('no_session', 'App\Http\Controllers\DocumentoController@noSession')->name('documentos.no_session');
 Route::get('postDebt', 'App\Http\Controllers\PagosAPIController@postDebt')->name('pagos.postDebt');
 Route::get('getDebt', 'App\Http\Controllers\PagosAPIController@getDebt')->name('pagos.getDebt');
-
-
+Route::get('copyAll', 'App\Http\Controllers\PagoController@copyAll')->name('pago.copyAll');
+Route::get('moveAll', 'App\Http\Controllers\PagoController@moveAll')->name('pago.moveAll');
 Route::post('/soap', function (Request $request) {
     $soapServer = new SoapServer(null, [
         'uri' => '/soap',
@@ -75,6 +74,6 @@ Route::post('/soap', function (Request $request) {
     $response = ob_get_clean();
 
     return response($response, 200)->header('Content-Type', 'text/xml');
-});
+})->name('soap');;
 
 

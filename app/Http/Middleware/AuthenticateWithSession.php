@@ -35,7 +35,22 @@ class AuthenticateWithSession
      */
     public function handle($request, Closure $next)
     {
-        //dd($request);
+
+        // Excluir rutas específicas de la autenticación
+        $excludeRoutes = [
+            'documentos.no_session',
+            'soap',
+        ];
+
+        $currentRoute = $request->route()->getName();
+
+        //Log::debug('Ruta: '.$currentRoute);
+
+        if (in_array($currentRoute, $excludeRoutes)) {
+            //Log::debug('entra sin autenticar: ');
+            return $next($request);
+        }
+
         $userID='';
         foreach ($request as $v){
             //print_r($v);
@@ -49,26 +64,24 @@ class AuthenticateWithSession
             }
 
         }
-        //if ($userID){
+        if ($userID){
+
 
             $userIDDecrypt = $this->cryptoJsAesDecrypt("myPass",$userID);
 
             Log::debug('user decrypt: '.$userIDDecrypt);
-            //if ($userIDDecrypt){
+            if ($userIDDecrypt){
                 $request->session()->put('authenticated', time());
                 $user = new User();
-                $user->id=1;
+                $user->id=$userIDDecrypt;
                 $request->session()->put('user', $user);
-            //}
+            }
 
-        //}
+        }
         if (!empty(session('authenticated'))) {
             //Log::debug('logueado');
             $request->session()->put('authenticated', time());
-
-
-            $response = $next($request);
-            return $response;
+            return $next($request);
         }
 
         return redirect('no_session');

@@ -44,5 +44,10 @@ Route::put('/guardar-ddjj/{empresa}/{mes}/{year}/{intereses}/{numero}/{intereses
 Route::put('/guardar-ddjj-comprobante/{empresa}/{mes}/{year}/{numero}', [WebServiceController::class, 'guardarDDJJComprobante']);
 Route::get('/empleados-por-empresa-sin-novedades/{idEmpresa}', [WebServiceController::class, 'empleadosPorEmpresaSinNovedades']);
 Route::delete('/eliminar-empleado/{id}/{idUsuario}', [WebServiceController::class, 'eliminarEmpleado']);
+Route::get('/empleado/{idEmpleado}', [WebServiceController::class, 'empleadoPorId']);
+Route::get('/categorias', [WebServiceController::class, 'categorias']);
+Route::get('/tipos-novedades', [WebServiceController::class, 'tiposNovedades']);
+Route::get('/empresas-exceptuadas-validacion-minimo-traer-por-empresa/{idEmpresa}', [WebServiceController::class, 'empresasExceptuadasValidacionMinimoTraerPorEmpresa']);
+Route::get('/empresas-importe-minimo', [WebServiceController::class, 'empresasImporteMinimo']);
 
 

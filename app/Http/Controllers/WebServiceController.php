@@ -449,4 +449,94 @@ class WebServiceController extends Controller
     }
 
 
+    public function empleadoPorId($idEmpleado)
+    {
+        $results=DB::select(DB::raw("exec DDJJ_EmpleadosTraerPorId :Param1"),[
+            ':Param1' => $idEmpleado,
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
+    public function categorias()
+    {
+        $results = DB::select(DB::raw("exec DDJJ_CategoriasTraer"), [
+
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
+    public function tiposNovedades()
+    {
+        $results = DB::select(DB::raw("exec DDJJ_TiposNovedadesTraer"), [
+
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
+    public function empresasExceptuadasValidacionMinimoTraerPorEmpresa($idEmpresa)
+    {
+        $results=DB::select(DB::raw("exec BA_EmpresasExceptuadasValidacionMinimoTraerPorEmpresa :Param1"),[
+            ':Param1' => $idEmpresa,
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
+    public function empresasImporteMinimo()
+    {
+        $results = DB::select(DB::raw("exec BA_EmpresasImporteMinimoTraer"), [
+
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
 }

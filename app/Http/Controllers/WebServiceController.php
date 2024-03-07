@@ -429,5 +429,24 @@ class WebServiceController extends Controller
         return response()->json(['result' => $results]);
     }
 
+    public function eliminarEmpleado($idEmpleado,$idUsuario)
+    {
+        $results=DB::select(DB::raw("exec DDJJ_EmpleadosEliminar :Param1, :Param2"),[
+            ':Param1' => $idEmpleado,
+            ':Param2' => $idUsuario
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
 
 }

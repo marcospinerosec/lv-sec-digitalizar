@@ -411,5 +411,23 @@ class WebServiceController extends Controller
         return response()->json(['result' => $results]);
     }
 
+    public function empleadosPorEmpresaSinNovedades($idEmpresa)
+    {
+        $results=DB::select(DB::raw("exec DDJJ_EmpleadosPorEmpresaSinNovedades :Param1"),[
+            ':Param1' => $idEmpresa,
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
 
 }

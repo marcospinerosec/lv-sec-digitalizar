@@ -42,5 +42,5 @@ Route::get('/central-pagos/{produccion}', [WebServiceController::class, 'central
 
 Route::put('/guardar-ddjj/{empresa}/{mes}/{year}/{intereses}/{numero}/{interesesPFT}/{vencimiento}/{vencimientoOriginal}/{mp}/{idUsuario}', [WebServiceController::class, 'guardarDDJJ']);
 Route::put('/guardar-ddjj-comprobante/{empresa}/{mes}/{year}/{numero}', [WebServiceController::class, 'guardarDDJJComprobante']);
-
+Route::get('/empleados-por-empresa-sin-novedades/{idEmpresa}', [WebServiceController::class, 'empleadosPorEmpresaSinNovedades']);
 

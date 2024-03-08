@@ -49,5 +49,7 @@ Route::get('/categorias', [WebServiceController::class, 'categorias']);
 Route::get('/tipos-novedades', [WebServiceController::class, 'tiposNovedades']);
 Route::get('/empresas-exceptuadas-validacion-minimo-traer-por-empresa/{idEmpresa}', [WebServiceController::class, 'empresasExceptuadasValidacionMinimoTraerPorEmpresa']);
 Route::get('/empresas-importe-minimo', [WebServiceController::class, 'empresasImporteMinimo']);
+Route::put('/empleados-actualizar/{idEmpleado}/{cuil}/{nombre}/{idCategoria}/{afiliado}/{ingreso}/{idNovedad}/{egreso}/{ia100}/{ica}/{idUsuario}', [WebServiceController::class, 'empleadosActualizar']);
+Route::get('/empleados-traer-por-cuil/{cuil}/{idEmpresa}', [WebServiceController::class, 'empleadosTraerPorCuil']);
 
 

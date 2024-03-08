@@ -539,4 +539,96 @@ class WebServiceController extends Controller
         return response()->json(['result' => $results]);
     }
 
+
+
+    public function empleadosActualizar($idEmpleado, $cuil, $nombre,$idCategoria,$afiliado,$ingreso,$idNovedad,$egreso,$ia100,$ica,$idUsuario)
+    {
+        $ingreso = ($ingreso=='null')?null:date('Y-m-d', strtotime($ingreso));
+        $egreso = ($egreso=='null')?null:date('Y-m-d', strtotime($egreso));
+        $idEmpleado = intval($idEmpleado);
+        $idCategoria = intval($idCategoria);
+        $idNovedad = ($idNovedad=='null')?null:intval($idNovedad);
+        $ia100 = floatval($ia100);
+        $ica = floatval($ica);
+        $afiliado = intval($afiliado);
+
+        $idUsuario = intval($idUsuario);
+
+
+
+
+
+        try {
+            DB::enableQueryLog();
+
+
+            DB::statement("exec DDJJ_EmpleadosActualizar ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?", [
+                $idEmpleado,
+                $cuil,
+                urldecode($nombre),
+                $idCategoria,
+                $afiliado,
+                $ingreso,
+                $idNovedad,
+                $egreso,
+                $ia100,
+                $ica,
+                $idUsuario
+            ]);
+
+            // Tu lógica de actualización aquí
+
+            return response()->json(['message' => 'Datos actualizados con éxito']);
+        } catch (QueryException $e) {
+            // Aquí manejas la excepción
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+
+            // Obtén los parámetros utilizados en la llamada al procedimiento almacenado
+            /*$parametros = [
+                'empleado' => $idEmpleado,
+                'cuil' => $cuil,
+                'nombre' => $nombre,
+                'categoria' => $idCategoria,
+                'afiliado' => $afiliado,
+                'ingreso' => $ingreso,
+                'novedad' => $idNovedad,
+                'egreso' => $egreso,
+                'ia100' => $ia100,
+                'ica' => $ica,
+                'idUsuario' => $idUsuario,
+            ];
+
+            // Log de la excepción o cualquier otro manejo que necesites
+
+            \Log::error("Error al ejecutar el procedimiento almacenado en " . now() . ": $errorMessage (Code: $errorCode). Parámetros: " . print_r($parametros, true));
+
+            Log::debug('SQL Queries: '.json_encode(DB::getQueryLog()));*/
+
+            // Devuelve una respuesta indicando que ha ocurrido un error
+            return response()->json(['error' => 'Ha ocurrido un error al procesar la solicitud'], 500);
+        }
+
+
+    }
+
+    public function empleadosTraerPorCuil($cuil,$idEmpresa)
+    {
+        $results=DB::select(DB::raw("exec DDJJ_EmpleadosTraerPorCuil :Param1,:Param2"),[
+            ':Param1' => $cuil,
+            ':Param2' => $idEmpresa,
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
 }

@@ -702,4 +702,44 @@ class WebServiceController extends Controller
 
     }
 
+    public function ddjjHistorial($idEmpresa,$year)
+    {
+        $results=DB::select(DB::raw("exec DDJJ_ConsultaHistorialTotales :Param1,:Param2"),[
+            ':Param1' => $idEmpresa,
+            ':Param2' => $year,
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
+    public function ddjjHistorialVencimientosAnteriores($idEmpresa,$year,$mes,$envio)
+    {
+        $results=DB::select(DB::raw("exec DDJJ_ConsultaHistorialTotalesVencAnteriores :Param1,:Param2,:Param3,:Param4"),[
+            ':Param1' => $idEmpresa,
+            ':Param2' => $year,
+            ':Param3' => $mes,
+            ':Param4' => $envio,
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
 }

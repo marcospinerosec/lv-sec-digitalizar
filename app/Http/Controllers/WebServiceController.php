@@ -702,4 +702,79 @@ class WebServiceController extends Controller
 
     }
 
+    public function importarEmpleados(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt',
+            'idEmpresa' => 'required|integer',
+            'idUsuario' => 'required|integer',
+        ]);
+
+        // Retrieve the file and parameters
+        $file = $request->file('file');
+        $idEmpresa = $request->input('idEmpresa');
+        $idUsuario = $request->input('idUsuario');
+
+        // Open the file and read it line by line
+        $path = $file->getRealPath();
+        $fileHandle = fopen($path, 'r');
+
+        if ($fileHandle === false) {
+            return response()->json(['error' => 'Unable to open file'], 500);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            DB::statement('exec DDJJ_EmpleadosEliminar ?', [$idEmpresa]);
+            while (($line = fgets($fileHandle)) !== false) {
+                $line = trim($line);
+                // Log the line before and after conversion
+                Log::debug('Raw Line: ' . $line);
+                // Detect encoding and convert to UTF-8 if necessary
+                /*$encoding = mb_detect_encoding($line, 'UTF-8, ISO-8859-1', true);
+                if ($encoding != 'UTF-8') {
+                    $line = mb_convert_encoding($line, 'UTF-8', $encoding);
+                    Log::debug('Converted Line: ' . $line);
+                }*/
+
+
+
+
+                // Skip empty lines
+                if (empty($line)) {
+                    continue;
+                }
+
+                // Call the stored procedure with the line data
+                $result = DB::statement('exec DDJJ_EmpleadosImportarArchivo_Nuevo ?, ?, ?', [$idEmpresa, $idUsuario, $line /* add other parameters if needed */]);
+
+                // Log result
+
+                Log::debug('Stored Procedure Result: ' . $result);
+            }
+
+            fclose($fileHandle);
+
+            Log::debug('Before commit');
+            DB::commit();
+            Log::debug('Transaction committed');
+
+            return response()->json(['success' => 'File processed successfully'], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Error caught: ' . $e->getMessage());
+            DB::rollBack();
+            fclose($fileHandle);
+
+            return response()->json(['error' => 'Error processing file: ' . $e->getMessage()], 500);
+        } finally {
+            if (isset($fileHandle) && is_resource($fileHandle)) {
+                fclose($fileHandle);
+            }
+        }
+    }
+
+
 }

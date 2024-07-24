@@ -52,6 +52,8 @@ Route::get('/empresas-importe-minimo', [WebServiceController::class, 'empresasIm
 Route::put('/empleados-actualizar/{idEmpleado}/{cuil}/{nombre}/{idCategoria}/{afiliado}/{ingreso}/{idNovedad}/{egreso}/{ia100}/{ica}/{idUsuario}', [WebServiceController::class, 'empleadosActualizar']);
 Route::get('/empleados-traer-por-cuil/{cuil}/{idEmpresa}', [WebServiceController::class, 'empleadosTraerPorCuil']);
 Route::put('/empleados-agregar/{idEmpresa}/{cuil}/{nombre}/{idCategoria}/{afiliado}/{ingreso}/{idNovedad}/{egreso}/{ia100}/{ica}/{idUsuario}', [WebServiceController::class, 'empleadosAgregar']);
+Route::post('/importar-empleados', [WebServiceController::class, 'importarEmpleados']);
+
 
 
 

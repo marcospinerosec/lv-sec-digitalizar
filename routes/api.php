@@ -39,7 +39,8 @@ Route::get('/porcentaje-interes-traer', [WebServiceController::class, 'traerPorc
 Route::get('/verifica-boleta/{empresa}/{mes}/{year}', [WebServiceController::class, 'verificaBoletaPago']);
 Route::get('/empleados-empresa-ddjj/{empresa}/{mes}/{year}', [WebServiceController::class, 'empleadosPorEmpresaParaDDJJ']);
 Route::get('/central-pagos/{produccion}', [WebServiceController::class, 'centralPagos']);
-
+Route::get('/ddjj-historial/{empresa}/{year}', [WebServiceController::class, 'ddjjHistorial']);
+Route::get('/ddjj-historial-vencimientos-anteriores/{empresa}/{year}/{mes}/{envio}', [WebServiceController::class, 'ddjjHistorialVencimientosAnteriores']);
 Route::put('/guardar-ddjj/{empresa}/{mes}/{year}/{intereses}/{numero}/{interesesPFT}/{vencimiento}/{vencimientoOriginal}/{mp}/{idUsuario}', [WebServiceController::class, 'guardarDDJJ']);
 Route::put('/guardar-ddjj-comprobante/{empresa}/{mes}/{year}/{numero}', [WebServiceController::class, 'guardarDDJJComprobante']);
 Route::get('/empleados-por-empresa-sin-novedades/{idEmpresa}', [WebServiceController::class, 'empleadosPorEmpresaSinNovedades']);

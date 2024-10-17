@@ -742,7 +742,50 @@ class WebServiceController extends Controller
         return response()->json(['result' => $results]);
     }
 
+
     public function importarEmpleados(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt',
+            'idEmpresa' => 'required|integer',
+            'idUsuario' => 'required|integer',
+        ]);
+
+        // Retrieve the file and parameters
+        $file = $request->file('file');
+        $idEmpresa = $request->input('idEmpresa');
+        $idUsuario = $request->input('idUsuario');
+
+        // Definir la ruta de destino donde se guardará el archivo
+        $destinationPath = public_path('files');
+
+        // Asegurarse de que el directorio 'files' exista
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+
+        // Mover el archivo al directorio 'files' con un nombre único
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $destinationPath . '/' . $fileName;
+        $file->move($destinationPath, $fileName);
+
+        try {
+
+            // Call the stored procedure with the line data
+            $result = DB::statement('exec DDJJ_EmpleadosImportarArchivo ?, ?, ?', [$filePath,$idEmpresa, $idUsuario]);
+
+
+            return response()->json(['success' => true, 'message' => 'Archivo guardado y enviado para procesamiento.']);
+
+        } catch (\Exception $e) {
+            Log::error('Error al procesar el archivo: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al procesar el archivo en el SP.'], 500);
+        }
+
+    }
+
+    public function importarEmpleados_new(Request $request)
     {
         // Validate the request
         $request->validate([

@@ -128,6 +128,28 @@ class WebServiceController extends Controller
             foreach ($result as $key => &$value) {
                 if (is_string($value)) {
                     $value = utf8_encode($value);
+                    Log::info('Valor: '.$value);
+                }
+            }
+        }
+
+        return response()->json(['result' => $results]);
+    }
+
+    public function importeMinimoPorEmpresa($empresa, $mes, $year)
+    {
+        $results = DB::select(DB::raw("exec DDJJ_ImporteMinimoPorEmpresa :Param1, :Param2, :Param3"), [
+            ':Param1' => $empresa,
+            ':Param2' => $mes,
+            ':Param3' => $year,
+        ]);
+
+        // Convertir propiedades de tipo cadena a UTF-8
+        foreach ($results as &$result) {
+            foreach ($result as $key => &$value) {
+                if (is_string($value)) {
+                    $value = utf8_encode($value);
+                    Log::info('Valor: '.$value);
                 }
             }
         }

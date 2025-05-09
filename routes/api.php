@@ -45,6 +45,7 @@ Route::get('/ddjj-historial-vencimientos-anteriores/{empresa}/{year}/{mes}/{envi
 Route::put('/guardar-ddjj/{empresa}/{mes}/{year}/{intereses}/{numero}/{interesesPFT}/{vencimiento}/{vencimientoOriginal}/{mp}/{idUsuario}', [WebServiceController::class, 'guardarDDJJ']);
 Route::put('/guardar-ddjj-comprobante/{empresa}/{mes}/{year}/{numero}', [WebServiceController::class, 'guardarDDJJComprobante']);
 Route::get('/empleados-por-empresa-sin-novedades/{idEmpresa}', [WebServiceController::class, 'empleadosPorEmpresaSinNovedades']);
+Route::get('/importe-minimo-por-empresa/{idEmpresa}/{mes}/{year}', [WebServiceController::class, 'importeMinimoPorEmpresa']);
 Route::delete('/eliminar-empleado/{id}/{idUsuario}', [WebServiceController::class, 'eliminarEmpleado']);
 Route::get('/empleado/{idEmpleado}', [WebServiceController::class, 'empleadoPorId']);
 Route::get('/categorias', [WebServiceController::class, 'categorias']);
